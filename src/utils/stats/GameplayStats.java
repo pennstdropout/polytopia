@@ -219,8 +219,6 @@ public class GameplayStats {
             int num = 0;
             if(unitCount.containsKey(unitType))
                 num = unitCount.get(unitType);
-            System.out.println(key);
-            System.out.println(statsCount);
             statsCount.get(key).put(turn, num);
         }
         statsCount.get("Num units").put(turn, gs.getUnits(playerID).size());

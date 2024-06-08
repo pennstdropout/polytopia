@@ -6,9 +6,10 @@ import core.actions.ActionCommand;
 import core.actions.unitactions.Upgrade;
 import core.actors.City;
 import core.actors.Tribe;
-import core.actors.units.Bomber;
 import core.actors.units.Raft;
 import core.actors.units.Rammer;
+import core.actors.units.Scout;
+import core.actors.units.Bomber;
 import core.actors.units.Unit;
 import core.game.Board;
 import core.game.GameState;
@@ -41,7 +42,7 @@ public class UpgradeCommand implements ActionCommand {
             if(target == RAMMER)
                 ((Rammer)newUnit).setBaseLandUnit(((Raft)unit).getBaseLandUnit());
             else if(target == SCOUT)
-                ((Rammer)newUnit).setBaseLandUnit(((Raft)unit).getBaseLandUnit());
+                ((Scout)newUnit).setBaseLandUnit(((Raft)unit).getBaseLandUnit());
             else if (target == BOMBER)
                 ((Bomber)newUnit).setBaseLandUnit(((Raft)unit).getBaseLandUnit());
 

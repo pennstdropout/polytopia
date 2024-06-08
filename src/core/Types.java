@@ -161,7 +161,7 @@ public class Types {
         FISH(0, "img/resource/fish2.png", null,'h', FISH_COST, FISH_POP, FISHING),
         FRUIT(1, "img/resource/fruit2.png", null, 'f', FRUIT_COST, FRUIT_POP, ORGANIZATION),
         ANIMAL(2, "img/resource/animal2.png", null, 'a', ANIMAL_COST, ANIMAL_POP, HUNTING),
-        WHALES(3, "img/resource/whale2.png", "img/resource/whale3.png", 'w', WHALES_COST, WHALES_STARS, AQUACULTURE),
+        STARS(3, "img/resource/whale2.png", "img/resource/whale3.png", 'w', WHALES_COST, WHALES_STARS, AQUACULTURE),
         ORE(5, "img/resource/ore2.png", null, 'o', 0, 0, MINING),
         CROPS(6, "img/resource/crops2.png", null, 'c', 0, 0, FARMING),
         RUINS(7, "img/resource/ruins2.png", null, 'r', 0, 0, null);
@@ -184,7 +184,7 @@ public class Types {
         }
         public int getKey() {  return key; }
         public Image getImage(TERRAIN t) {
-            if (this == WHALES && t != null) {
+            if (this == STARS && t != null) {
                 if (t == DEEP_WATER) {
                     return ImageIO.GetInstance().getImage(imageFile);
                 } else {
@@ -546,6 +546,7 @@ public class Types {
                 case "MIND_BENDER": return MIND_BENDER;
                 case "RAFT": return RAFT;
                 case "RAMMER": return RAMMER;
+                case "SCOUT": return SCOUT;
                 case "BOMBER": return BOMBER;
                 case "SUPERUNIT": return SUPERUNIT;
             }
@@ -576,6 +577,7 @@ public class Types {
                 case WARRIOR: return new Warrior(pos, kills, isVeteran, ownerID, tribeID);
                 case RIDER: return new Rider(pos, kills, isVeteran, ownerID, tribeID);
                 case CLOAK: return new Cloak(pos, kills, isVeteran, ownerID, tribeID);
+                case DAGGER: return new Dagger(pos, kills, isVeteran, ownerID, tribeID);
                 case DEFENDER: return new Defender(pos, kills, isVeteran, ownerID, tribeID);
                 case SWORDMAN: return new Swordman(pos, kills, isVeteran, ownerID, tribeID);
                 case ARCHER: return new Archer(pos, kills, isVeteran, ownerID, tribeID);
@@ -584,6 +586,7 @@ public class Types {
                 case MIND_BENDER: return new MindBender(pos, kills, isVeteran, ownerID, tribeID);
                 case RAFT: return new Raft(pos, kills, isVeteran, ownerID, tribeID);
                 case RAMMER: return new Rammer(pos, kills, isVeteran, ownerID, tribeID);
+                case SCOUT: return new Scout(pos, kills, isVeteran, ownerID, tribeID);
                 case BOMBER: return new Bomber(pos, kills, isVeteran, ownerID, tribeID);
                 case SUPERUNIT: return new SuperUnit(pos, kills, isVeteran, ownerID, tribeID);
 

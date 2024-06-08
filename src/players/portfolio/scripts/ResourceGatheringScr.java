@@ -38,7 +38,7 @@ public class ResourceGatheringScr extends BaseScript {
         for(Action act : actions)
         {
             ResourceGathering action = (ResourceGathering) act;
-            if(action.getResource() == WHALES)
+            if(action.getResource() == STARS)
                 return new Pair<>(act, 1.0);
 
             BuildingFunc bf = new BuildingFunc();

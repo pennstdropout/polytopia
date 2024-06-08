@@ -241,7 +241,7 @@ public class Board {
 
     /**
      * Masks a resource that can only be revealed after researching a specific technology.
-     * @param playerID if -1 we don not mask any resources.
+     * @param playerID if -1 we do not mask any resources.
      * @param x x coordinate of the resource.
      * @param y y coordinate of the resource.
      * @return Returns the resource at x,y or null if there is no resource, or the resource is hidden.
@@ -263,8 +263,8 @@ public class Board {
                             return null;
                         }
                         break;
-                    case WHALES:
-                        if (!t.isResearched(Types.TECHNOLOGY.FISHING)) {
+                    case STARS:
+                        if (!t.isResearched(Types.TECHNOLOGY.SAILING)) {
                             return null;
                         }
                         break;
@@ -424,14 +424,17 @@ public class Board {
     public Types.UNIT getBaseLandUnit(Unit unit) {
         switch (unit.getType()) {
             case RAFT:
-                Raft boat = (Raft) unit;
-                return boat.getBaseLandUnit();
+                Raft raft = (Raft) unit;
+                return raft.getBaseLandUnit();
             case RAMMER:
-                Rammer ship = (Rammer) unit;
-                return ship.getBaseLandUnit();
+                Rammer rammer = (Rammer) unit;
+                return rammer.getBaseLandUnit();
+            case SCOUT:
+                Scout scout = (Scout) unit;
+                return scout.getBaseLandUnit();
             case BOMBER:
-                Bomber battleship = (Bomber) unit;
-                return battleship.getBaseLandUnit();
+                Bomber bomber = (Bomber) unit;
+                return bomber.getBaseLandUnit();
             default:
                 throw new IllegalStateException("Unexpected value: " + unit.getType());
         }
