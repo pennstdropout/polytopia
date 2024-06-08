@@ -107,6 +107,7 @@ public abstract class Unit extends Actor
             case MIND_BENDER:
             case CATAPULT:
             case DEFENDER:
+            case BOMBER:
                 if(transition == MOVED && status == FRESH) { return true; }
                 if(transition == ATTACKED && status == FRESH) { return true; }
                 return false;
@@ -115,15 +116,15 @@ public abstract class Unit extends Actor
             case RAFT:
             case RAMMER:
             case SCOUT:
-            case BOMBER:
             case WARRIOR:
             case SWORDMAN:
             case SUPERUNIT:
+            case CLOAK:
+            case DAGGER:
                 if(transition == MOVED && status == FRESH) { return true; }
                 if(transition == ATTACKED && status == FRESH) { return true; }
                 if(transition == ATTACKED && status == MOVED) { return true; }
                 return false;
-            case CLOAK:
             //Rules for Escape
             case RIDER:
                 if(transition == MOVED && status == FRESH) { return true; }
@@ -159,20 +160,21 @@ public abstract class Unit extends Actor
                 case CATAPULT:
                 case DEFENDER:
                 case SUPERUNIT:
+                case BOMBER:
                     this.status = FINISHED;
                     break;
                 case ARCHER:
                 case RAFT:
                 case RAMMER:
                 case SCOUT:
-                case BOMBER:
                 case WARRIOR:
                 case SWORDMAN:
+                case CLOAK:
+                case DAGGER:
                     if(newStatus == MOVED && this.status == FRESH) { this.status = MOVED; }
                     if(newStatus == ATTACKED && this.status == FRESH) { this.status = FINISHED; }
                     if(newStatus == ATTACKED && this.status == MOVED) { this.status = FINISHED; }
                     break;
-                case CLOAK:
                 case RIDER:
                     if(newStatus == MOVED && this.status == FRESH) { this.status = MOVED; }
                     if(newStatus == MOVED && this.status == ATTACKED) { this.status = MOVED_AND_ATTACKED; }
@@ -209,9 +211,7 @@ public abstract class Unit extends Actor
         return this.status == FRESH;
     }
 
-
     public abstract Unit copy(boolean hideInfo);
-
 
     Unit hide()
     {

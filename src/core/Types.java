@@ -599,14 +599,13 @@ public class Types {
 
         public boolean spawnable()
         {
-            return !(this == RAFT || this == RAMMER || this == SCOUT || this == BOMBER || this == SUPERUNIT);
+            return !(this == DAGGER || this == RAFT || this == RAMMER || this == SCOUT || this == BOMBER || this == SUPERUNIT);
         }
 
         public boolean isWaterUnit()
         {
             return this == RAFT || this == RAMMER || this == SCOUT || this == BOMBER;
         }
-
 
         public boolean isRanged()
         {

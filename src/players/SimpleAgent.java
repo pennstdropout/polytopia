@@ -272,6 +272,9 @@ public class SimpleAgent extends Agent {
             case MIND_BENDER:
                 score = enemiesInCity>0 ? 0 : 2;
                 break;
+            case CLOAK:
+                score = enemiesInCity>0 ? 0 : 5;
+                break;
             case WARRIOR:
                 score = 3;
                 break;
@@ -304,6 +307,7 @@ public class SimpleAgent extends Agent {
             case ARCHERY:
             case SAILING:
             case STRATEGY:
+            case DIPLOMACY:
             case CHIVALRY:
                 return 4;
             default:
@@ -332,7 +336,6 @@ public class SimpleAgent extends Agent {
         }
         return 2;
     }
-
 
     //Evaluate a clear action
     private int evalClear(Tribe thisTribe) {
@@ -377,12 +380,12 @@ public class SimpleAgent extends Agent {
             case MINE:
             case FORGE:
             case WINDMILL:
-            case MARKET:
                 score = 4; //These increase population in a while costing less to build so these cases are weighted higher
 //                break;
             case PORT:
             case SAWMILL:
             case LUMBER_HUT:
+            case MARKET:
                 score = 3; // These increase population less and cost more so are of less priority
 //                break;
             case GRAND_BAZAR:
@@ -407,19 +410,17 @@ public class SimpleAgent extends Agent {
     }
 
     //Evaluate an upgrade action on a boat/ship
-    // TODO: UPGRADING
     // TODO: CLOAKS
     // TODO: SPLASH
     // TODO: MARKET?
     private int evalUpgrade(Action a, GameState gs, Tribe thisTribe) {
         Unit u = (Unit) gs.getActor(((Upgrade) a).getUnitId());
 
-        if (u.getType() == Types.UNIT.BOMBER) { // It's a ship to a battleship
+        if (u.getType() == Types.UNIT.BOMBER) {
             if (thisTribe.getMaxProduction(gs) > 5 && thisTribe.getStars() > 8) { //If the agent has a good amount of stars and good production then its worth an upgrade
-
                 return 3;
             }
-        } else { // It's a boat to a ship
+        } else if (u.getType() == Types.UNIT.RAMMER || u.getType() == Types.UNIT.SCOUT) {
             if (thisTribe.getMaxProduction(gs) > 3 && thisTribe.getStars() > 6) {
                 return 3;
             }

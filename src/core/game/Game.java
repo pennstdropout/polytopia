@@ -398,8 +398,8 @@ public class Game {
             if (VISUALS && frame != null) {
                 boolean showAllBoard = Constants.GUI_FORCE_FULL_OBS || Constants.PLAY_WITH_FULL_OBS;
 
-                if (showAllBoard) frame.update(getGameState(-1), action);  // Full Obs
-                else frame.update(gameStateObservations[gs.getActiveTribeID()], action);        // Partial Obs
+                if (showAllBoard) frame.update(getGameState(-1), action); // Full Obs
+                else frame.update(gameStateObservations[gs.getActiveTribeID()], action); // Partial Obs
 
                 // Turn should be ending, start timer for delay of next action and show all updates
                 if (action != null && action.getActionType() == END_TURN) {
