@@ -1,4 +1,5 @@
 import core.Types;
+import core.actions.Action;
 import core.game.Game;
 import org.json.JSONArray;
 import players.*;
@@ -136,13 +137,14 @@ class Run {
         return weights;
     }
 
-    public static Agent getAgent(Run.PlayerType playerType, long agentSeed)
+    public static Agent getAgent(Run.PlayerType playerType, long agentSeed, ActionController ac)
     {
         switch (playerType)
         {
             case DONOTHING: return new DoNothingAgent(agentSeed);
             case RANDOM: return new RandomAgent(agentSeed);
             case SIMPLE: return new SimpleAgent(agentSeed);
+            case HUMAN: return new HumanAgent(ac);
             case OSLA:
                 OSLAParams oslaParams = new OSLAParams();
                 oslaParams.stop_type = oslaParams.STOP_FMCALLS; //Upper bound

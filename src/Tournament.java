@@ -262,7 +262,7 @@ public class Tournament {
 
         for(int i = 0; i < playerTypes.length; ++i)
         {
-            Agent ag = Run.getAgent(playerTypes[i], agentSeed);
+            Agent ag = Run.getAgent(playerTypes[i], agentSeed, new ActionController());
             assert ag != null;
             ag.setPlayerIDs(i, allIds);
             players.add(ag);

@@ -12,6 +12,7 @@ import utils.Vector2d;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 import static core.Types.BUILDING.*;
@@ -179,12 +180,14 @@ public class BuildingFunc {
                 LinkedList<Vector2d> neighs = position.neighborhood(1, 0, gs.getBoard().getSize());
 
                 for (Vector2d neighPos : neighs) {
-                    Types.BUILDING supportBuilding = target.getMatchingBuildings();
-                    valid = validConstruction(gs, neighPos, supportBuilding, cityId, true);
-                    if (valid) {
-                        //Keep track of the best value for a neighbouring support building.
-                        double nGoodN = evalNeighSupportBuilding(neighPos, gs, supportBuilding);
-                        if(nGoodN > maxValue) maxValue = nGoodN;
+                    List<Types.BUILDING> supportBuildings = target.getMatchingBuildings();
+                    for (Types.BUILDING supportBuilding : supportBuildings) {
+                        valid = validConstruction(gs, neighPos, supportBuilding, cityId, true);
+                        if (valid) {
+                            //Keep track of the best value for a neighbouring support building.
+                            double nGoodN = evalNeighSupportBuilding(neighPos, gs, supportBuilding);
+                            if(nGoodN > maxValue) maxValue = nGoodN;
+                        }
                     }
                 }
             }

@@ -4,6 +4,7 @@ import core.game.Game;
 import core.game.TribeResult;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import players.ActionController;
 import players.Agent;
 import players.heuristics.PruneHeuristic;
 import players.heuristics.PrunePortfolioHeuristic;
@@ -295,7 +296,7 @@ public class RunElites {
 
         for(int i = 0; i < playerTypes.length; ++i)
         {
-            Agent ag = Run.getAgent(playerTypes[i], agentSeed);
+            Agent ag = Run.getAgent(playerTypes[i], agentSeed, new ActionController());
             assert ag != null;
             ag.setPlayerIDs(i, allIds);
             players.add(ag);

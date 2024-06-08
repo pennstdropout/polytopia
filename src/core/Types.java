@@ -46,7 +46,8 @@ public class Types {
         SMITHERY(3, MINING),
         SPIRITUALISM(3, ARCHERY),
         TRADE(3, ROADS),
-        PHILOSOPHY(3, MEDITATION);
+        PHILOSOPHY(3, MEDITATION),
+        DIPLOMACY(3, STRATEGY);
 
         private int tier;
         private TECHNOLOGY parent;
@@ -502,7 +503,6 @@ public class Types {
     {
         WARRIOR (0,"img/unit/warrior/", "img/weapons/melee/tile006.png", WARRIOR_COST, null, WARRIOR_POINTS), //+10
         RIDER (1,"img/unit/rider/", "img/weapons/melee/tile001.png", RIDER_COST, RIDING, RIDER_POINTS), //+15
-        CLOAK (1,"img/unit/rider/", "img/weapons/melee/tile001.png", CLOAK_COST, RIDING, CLOAK_POINTS), //+15
         DEFENDER (2,"img/unit/defender/", "img/weapons/melee/tile002.png", DEFENDER_COST, STRATEGY, DEFENDER_POINTS), // +15
         SWORDMAN (3,"img/unit/swordsman/", "img/weapons/melee/tile000.png", SWORDMAN_COST, SMITHERY, SWORDMAN_POINTS), //+25
         ARCHER (4,"img/unit/archer/", "img/weapons/arrows/", ARCHER_COST, ARCHERY, ARCHER_POINTS),//+15
@@ -511,9 +511,11 @@ public class Types {
         MIND_BENDER(7,"img/unit/mind_bender/", "img/weapons/effects/bender/", MINDBENDER_COST, PHILOSOPHY, MINDBENDER_POINTS), //+25
         RAFT(8,"img/unit/boat/", "img/weapons/arrows/boat.png", RAFT_COST, FISHING, RAFT_POINTS), //+0
         RAMMER(9,"img/unit/ship/", "img/weapons/bombs/", RAMMER_COST, AQUACULTURE, RAMMER_POINTS),//+0
-        SCOUT(9,"img/unit/ship/", "img/weapons/bombs/", SCOUT_COST, SAILING, SCOUT_POINTS),//+0
         BOMBER(10,"img/unit/battleship/", "img/weapons/bombs/", BOMBER_COST, NAVIGATION, BOMBER_POINTS),//+0
-        SUPERUNIT(11, "img/unit/superunit/", "img/weapons/melee/tile003.png", SUPERUNIT_COST, null, SUPERUNIT_POINTS); //+50
+        SUPERUNIT(11, "img/unit/superunit/", "img/weapons/melee/tile003.png", SUPERUNIT_COST, null, SUPERUNIT_POINTS), //+50
+        SCOUT(12,"img/unit/ship/", "img/weapons/bombs/", SCOUT_COST, SAILING, SCOUT_POINTS),//+0
+        CLOAK (13,"img/unit/rider/", "img/weapons/melee/tile001.png", CLOAK_COST, DIPLOMACY, CLOAK_POINTS), //+15
+        DAGGER (14,"img/unit/warrior/", "img/weapons/melee/tile001.png", DAGGER_COST, DIPLOMACY, DAGGER_POINTS); //+15
 
         private int key;
         private String imageFile, weapon;
@@ -535,6 +537,7 @@ public class Types {
                 case "WARRIOR": return WARRIOR;
                 case "RIDER": return RIDER;
                 case "CLOAK": return CLOAK;
+                case "DAGGER": return DAGGER;
                 case "DEFENDER": return DEFENDER;
                 case "SWORDMAN": return SWORDMAN;
                 case "ARCHER": return ARCHER;

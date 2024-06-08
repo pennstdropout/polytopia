@@ -113,7 +113,9 @@ public class SimpleAgent extends Agent {
             score = evalMove(a, gs, thisTribe);
         }else if (a.getActionType() ==  ATTACK) {
             score = evalAttack(a, gs);
-        }else if (a.getActionType() ==  UPGRADE_SHIP || a.getActionType() == UPGRADE_BOAT) {
+        }else if (a.getActionType() ==  UPGRADE_TO_RAMMER ||
+                a.getActionType() == UPGRADE_TO_SCOUT ||
+                a.getActionType() == UPGRADE_TO_BOMBER) {
             score = evalUpgrade(a, gs, thisTribe);
         }else if (a.getActionType() ==  RECOVER) {
             score = evalRecover(a, gs, thisTribe);
@@ -405,6 +407,10 @@ public class SimpleAgent extends Agent {
     }
 
     //Evaluate an upgrade action on a boat/ship
+    // TODO: UPGRADING
+    // TODO: CLOAKS
+    // TODO: SPLASH
+    // TODO: MARKET?
     private int evalUpgrade(Action a, GameState gs, Tribe thisTribe) {
         Unit u = (Unit) gs.getActor(((Upgrade) a).getUnitId());
 

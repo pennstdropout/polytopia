@@ -8,8 +8,8 @@ import static core.Types.TURN_STATUS.*;
 
 public abstract class Unit extends Actor
 {
-    public int ATK;
-    public int DEF;
+    public double ATK;
+    public double DEF;
     public int MOV;
 
     public final int RANGE;
@@ -25,7 +25,7 @@ public abstract class Unit extends Actor
     private Types.TURN_STATUS status;
 
 
-    public Unit(int atk, int def, int mov, int max_hp, int range, int cost, Vector2d pos, int kills, boolean isVeteran, int cityId, int tribeID){
+    public Unit(double atk, double def, int mov, int max_hp, int range, int cost, Vector2d pos, int kills, boolean isVeteran, int cityId, int tribeID){
         this.ATK = atk;
         this.DEF = def;
         this.MOV = mov;
@@ -123,6 +123,7 @@ public abstract class Unit extends Actor
                 if(transition == ATTACKED && status == FRESH) { return true; }
                 if(transition == ATTACKED && status == MOVED) { return true; }
                 return false;
+            case CLOAK:
             //Rules for Escape
             case RIDER:
                 if(transition == MOVED && status == FRESH) { return true; }
@@ -171,6 +172,7 @@ public abstract class Unit extends Actor
                     if(newStatus == ATTACKED && this.status == FRESH) { this.status = FINISHED; }
                     if(newStatus == ATTACKED && this.status == MOVED) { this.status = FINISHED; }
                     break;
+                case CLOAK:
                 case RIDER:
                     if(newStatus == MOVED && this.status == FRESH) { this.status = MOVED; }
                     if(newStatus == MOVED && this.status == ATTACKED) { this.status = MOVED_AND_ATTACKED; }

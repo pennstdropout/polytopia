@@ -394,7 +394,9 @@ public class InfoView extends JComponent {
                     } else if (a.getActionType() == DISBAND) {
                         foundD = true;
                         listenerDisband.update(u.getActorId(), ac, gs);
-                    } else if (a.getActionType() == UPGRADE_BOAT || a.getActionType() == UPGRADE_SHIP) {
+                    } else if (a.getActionType() == UPGRADE_TO_RAMMER ||
+                            a.getActionType() == UPGRADE_TO_SCOUT ||
+                            a.getActionType() == UPGRADE_TO_BOMBER) {
                         foundU = true;
                         listenerUpgrade.update(u.getActorId(), ac, gs);
                     }
@@ -638,7 +640,7 @@ public class InfoView extends JComponent {
                     if (e.getSource() instanceof JButton) {
                         Unit u = (Unit) gs.getActor(unitID);
                         Types.ACTION actionType = null;
-                        if(u.getType() == Types.UNIT.RAFT) actionType = UPGRADE_BOAT;
+                        if(u.getType() == Types.UNIT.RAFT) actionType = UPGRADE_TO_SCOUT;
                         a = new Upgrade(actionType, unitID);
                     }
                     break;

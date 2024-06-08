@@ -44,12 +44,13 @@ public class GameplayStats {
     //Array helpers for data collection
     private final String[] stats = new String[]{"Production", "Num cities", "Tiles owned",
             "Num units", "Num units WARRIOR", "Num units RIDER", "Num units DEFENDER", "Num units SWORDMAN", "Num units ARCHER",
-            "Num units CATAPULT", "Num units KNIGHT", "Num units MIND_BENDER", "Num units BOAT", "Num units SHIP", "Num units BATTLESHIP", "Num units SUPERUNIT",
+            "Num units CATAPULT", "Num units KNIGHT", "Num units MIND_BENDER", "Num units RAFT", "Num units RAMMER", "Num units SCOUT", "Num units BOMBER",
+            "Num units SUPERUNIT", "Num units CLOAK", "Num units DAGGER",
             "Num techs", "Num techs farm", "Num techs mountain", "Num techs naval", "Num techs range", "Num techs roads",
             "Num monuments", "Num temples", "Num buildings", "Num buildings PORT", "Num buildings MINE", "Num buildings FORGE", "Num buildings FARM", "Num buildings WINDMILL",
-            "Num buildings CUSTOMS_HOUSE", "Num buildings LUMBER_HUT", "Num buildings SAWMILL",
+            "Num buildings MARKET", "Num buildings LUMBER_HUT", "Num buildings SAWMILL",
     };
-    private final List<Types.TECHNOLOGY> farmTechs = Arrays.asList(ORGANIZATION, FARMING, STRATEGY, CONSTRUCTION);
+    private final List<Types.TECHNOLOGY> farmTechs = Arrays.asList(ORGANIZATION, FARMING, STRATEGY, CONSTRUCTION, DIPLOMACY);
     private final List<Types.TECHNOLOGY> mountainTechs = Arrays.asList(CLIMBING, MINING, MEDITATION, SMITHERY, PHILOSOPHY);
     private final List<Types.TECHNOLOGY> navalTechs = Arrays.asList(FISHING, AQUACULTURE, SAILING, NAVIGATION, AQUATISM);
     private final List<Types.TECHNOLOGY> rangeTechs = Arrays.asList(HUNTING, ARCHERY, FORESTRY, SPIRITUALISM, MATHEMATICS);
@@ -57,9 +58,9 @@ public class GameplayStats {
 
     private final String[] actionSubtypes = new String[]{
             "Spawn WARRIOR", "Spawn RIDER", "Spawn DEFENDER", "Spawn SWORDMAN", "Spawn ARCHER",
-            "Spawn CATAPULT", "Spawn KNIGHT", "Spawn MIND_BENDER",
+            "Spawn CATAPULT", "Spawn KNIGHT", "Spawn MIND_BENDER", "Spawn CLOAK", "Spawn DAGGER",
             "Build monuments", "Build temples", "Build PORT", "Build MINE", "Build FORGE", "Build FARM", "Build WINDMILL",
-            "Build CUSTOMS_HOUSE", "Build LUMBER_HUT", "Build SAWMILL",
+            "Build MARKET", "Build LUMBER_HUT", "Build SAWMILL",
             "Research farm", "Research mountain", "Research naval", "Research range", "Research roads",
     };
 
@@ -218,6 +219,8 @@ public class GameplayStats {
             int num = 0;
             if(unitCount.containsKey(unitType))
                 num = unitCount.get(unitType);
+            System.out.println(key);
+            System.out.println(statsCount);
             statsCount.get(key).put(turn, num);
         }
         statsCount.get("Num units").put(turn, gs.getUnits(playerID).size());

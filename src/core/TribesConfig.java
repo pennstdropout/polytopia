@@ -5,8 +5,8 @@ public class TribesConfig
     /* UNITS */
 
     // Warrior
-    public static final int WARRIOR_ATTACK = 2;
-    public static final int WARRIOR_DEFENCE = 2;
+    public static final double WARRIOR_ATTACK = 2;
+    public static final double WARRIOR_DEFENCE = 2;
     public static final int WARRIOR_MOVEMENT = 1;
     public static final int WARRIOR_MAX_HP = 10;
     public static final int WARRIOR_RANGE = 1;
@@ -14,8 +14,8 @@ public class TribesConfig
     static final int WARRIOR_POINTS = 10;
 
     // Archer
-    public static final int ARCHER_ATTACK = 2;
-    public static final int ARCHER_DEFENCE = 1;
+    public static final double ARCHER_ATTACK = 2;
+    public static final double ARCHER_DEFENCE = 1;
     public static final int ARCHER_MOVEMENT = 1;
     public static final int ARCHER_MAX_HP = 10;
     public static final int ARCHER_RANGE = 2;
@@ -23,8 +23,8 @@ public class TribesConfig
     static final int ARCHER_POINTS = 15;
 
     // Catapult
-    public static final int CATAPULT_ATTACK = 4;
-    public static final int CATAPULT_DEFENCE = 0;
+    public static final double CATAPULT_ATTACK = 4;
+    public static final double CATAPULT_DEFENCE = 0;
     public static final int CATAPULT_MOVEMENT = 1;
     public static final int CATAPULT_MAX_HP = 10;
     public static final int CATAPULT_RANGE = 3;
@@ -32,8 +32,8 @@ public class TribesConfig
     static final int CATAPULT_POINTS = 40;
 
     // Swordsman
-    public static final int SWORDMAN_ATTACK = 3;
-    public static final int SWORDMAN_DEFENCE = 3;
+    public static final double SWORDMAN_ATTACK = 3;
+    public static final double SWORDMAN_DEFENCE = 3;
     public static final int SWORDMAN_MOVEMENT = 1;
     public static final int SWORDMAN_MAX_HP = 15;
     public static final int SWORDMAN_RANGE = 1;
@@ -41,8 +41,8 @@ public class TribesConfig
     static final int SWORDMAN_POINTS = 25;
 
     // MindBender
-    public static final int MINDBENDER_ATTACK = 0;
-    public static final int MINDBENDER_DEFENCE = 1;
+    public static final double MINDBENDER_ATTACK = 0;
+    public static final double MINDBENDER_DEFENCE = 1;
     public static final int MINDBENDER_MOVEMENT = 1;
     public static final int MINDBENDER_MAX_HP = 10;
     public static final int MINDBENDER_RANGE = 1;
@@ -51,8 +51,8 @@ public class TribesConfig
     static final int MINDBENDER_POINTS = 25;
 
     // Defender
-    public static final int DEFENDER_ATTACK = 1;
-    public static final int DEFENDER_DEFENCE = 3;
+    public static final double DEFENDER_ATTACK = 1;
+    public static final double DEFENDER_DEFENCE = 3;
     public static final int DEFENDER_MOVEMENT = 1;
     public static final int DEFENDER_MAX_HP = 15;
     public static final int DEFENDER_RANGE = 1;
@@ -60,8 +60,8 @@ public class TribesConfig
     static final int DEFENDER_POINTS = 15;
 
     // Knight
-    public static final int KNIGHT_ATTACK = 4;
-    public static final int KNIGHT_DEFENCE = 1;
+    public static final double KNIGHT_ATTACK = 4;
+    public static final double KNIGHT_DEFENCE = 1;
     public static final int KNIGHT_MOVEMENT = 3;
     public static final int KNIGHT_MAX_HP = 15;
     public static final int KNIGHT_RANGE = 1;
@@ -69,8 +69,8 @@ public class TribesConfig
     static final int KNIGHT_POINTS = 40;
 
     // Rider
-    public static final int RIDER_ATTACK = 2;
-    public static final int RIDER_DEFENCE = 1;
+    public static final double RIDER_ATTACK = 2;
+    public static final double RIDER_DEFENCE = 1;
     public static final int RIDER_MOVEMENT = 2;
     public static final int RIDER_MAX_HP = 10;
     public static final int RIDER_RANGE = 1;
@@ -78,49 +78,58 @@ public class TribesConfig
     static final int RIDER_POINTS = 15;
 
     // Cloak
-    public static final int CLOAK_ATTACK = 2;
-    public static final int CLOAK_DEFENCE = 1;
+    public static final double CLOAK_ATTACK = 0;
+    public static final double CLOAK_DEFENCE = 0.5;
     public static final int CLOAK_MOVEMENT = 2;
-    public static final int CLOAK_MAX_HP = 10;
+    public static final int CLOAK_MAX_HP = 5;
     public static final int CLOAK_RANGE = 1;
-    public static final int CLOAK_COST = 3;
+    public static final int CLOAK_COST = 8;
     static final int CLOAK_POINTS = 15;
 
+    // Dagger
+    public static final double DAGGER_ATTACK = 2;
+    public static final double DAGGER_DEFENCE = 1;
+    public static final int DAGGER_MOVEMENT = 2;
+    public static final int DAGGER_MAX_HP = 10;
+    public static final int DAGGER_RANGE = 1;
+    public static final int DAGGER_COST = 3;
+    static final int DAGGER_POINTS = 15;
+
     // Raft
-    public static final int RAFT_ATTACK = 0;
-    public static final int RAFT_DEFENCE = 1;
+    public static final double RAFT_ATTACK = 0;
+    public static final double RAFT_DEFENCE = 1;
     public static final int RAFT_MOVEMENT = 2;
     public static final int RAFT_RANGE = 2;
     public static final int RAFT_COST = 0;
     static final int RAFT_POINTS = 0;
 
     // Rammer
-    public static final int RAMMER_ATTACK = 3;
-    public static final int RAMMER_DEFENCE = 3;
+    public static final double RAMMER_ATTACK = 3;
+    public static final double RAMMER_DEFENCE = 3;
     public static final int RAMMER_MOVEMENT = 3;
     public static final int RAMMER_RANGE = 1;
     public static final int RAMMER_COST = 5;
     static final int RAMMER_POINTS = 0;
 
     // Scout
-    public static final int SCOUT_ATTACK = 2;
-    public static final int SCOUT_DEFENCE = 1;
+    public static final double SCOUT_ATTACK = 2;
+    public static final double SCOUT_DEFENCE = 1;
     public static final int SCOUT_MOVEMENT = 3;
     public static final int SCOUT_RANGE = 2;
     public static final int SCOUT_COST = 5;
     static final int SCOUT_POINTS = 0;
 
     // Bomber
-    public static final int BOMBER_ATTACK = 3;
-    public static final int BOMBER_DEFENCE = 2;
+    public static final double BOMBER_ATTACK = 3;
+    public static final double BOMBER_DEFENCE = 2;
     public static final int BOMBER_MOVEMENT = 2;
     public static final int BOMBER_RANGE = 3;
     public static final int BOMBER_COST = 15;
     static final int BOMBER_POINTS = 0;
 
     // Superunit
-    public static final int SUPERUNIT_ATTACK = 5;
-    public static final int SUPERUNIT_DEFENCE = 4;
+    public static final double SUPERUNIT_ATTACK = 5;
+    public static final double SUPERUNIT_DEFENCE = 4;
     public static final int SUPERUNIT_MOVEMENT = 1;
     public static final int SUPERUNIT_MAX_HP = 40;
     public static final int SUPERUNIT_RANGE = 1;
@@ -128,7 +137,7 @@ public class TribesConfig
     static final int SUPERUNIT_POINTS = 50;
 
     // Explorer
-    public static final int NUM_STEPS = 15;
+    public static final double NUM_STEPS = 15;
 
     // General Unit constants
     public static final double ATTACK_MODIFIER = 4.5;
@@ -200,11 +209,11 @@ public class TribesConfig
     static final int FRUIT_COST = 2;
     static final int ANIMAL_POP = 1;
     static final int FISH_POP = 1;
-    static final int WHALES_STARS = 10;
+    static final int WHALES_STARS = 8;
     static final int FRUIT_POP = 1;
 
     // ROAD
-    public static final int ROAD_COST = 2;
+    public static final int ROAD_COST = 3;
 
     // City
     public static final int CITY_LEVEL_UP_WORKSHOP_PROD = 1;
@@ -227,7 +236,6 @@ public class TribesConfig
     public static final int CONVERT_REPERCUSSION = -5;
     public static final int MIN_STARS_SEND = 15;
 
-
     // Research
     public static final int TECH_BASE_COST = 4;
     public static final Types.TECHNOLOGY TECH_DISCOUNT = Types.TECHNOLOGY.PHILOSOPHY;
@@ -238,7 +246,7 @@ public class TribesConfig
     public static final int INITIAL_STARS = 5;//1000;
 
     /* ACTIONS */
-    public static final int CLEAR_FOREST_STAR = 2;
+    public static final int CLEAR_FOREST_STAR = 1;
     public static final int GROW_FOREST_COST = 5;
     public static final int BURN_FOREST_COST = 5;
     public static final int CLEAR_VIEW_POINTS = 5;

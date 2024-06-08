@@ -105,7 +105,7 @@ public class TechnologyTree {
             researched[target.ordinal()] = true;
 
             //researching leaves of the tree may
-            if(target == STRATEGY || target == AQUATISM || target == CHIVALRY || target == CONSTRUCTION ||
+            if(target == DIPLOMACY || target == AQUATISM || target == CHIVALRY || target == CONSTRUCTION ||
                target == MATHEMATICS || target == NAVIGATION || target == SMITHERY ||
                target == SPIRITUALISM || target == TRADE || target == PHILOSOPHY)
             {
