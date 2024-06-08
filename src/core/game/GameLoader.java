@@ -3,9 +3,9 @@ package core.game;
 import core.Types;
 import core.actors.City;
 import core.actors.Tribe;
-import core.actors.units.Battleship;
-import core.actors.units.Boat;
-import core.actors.units.Ship;
+import core.actors.units.Bomber;
+import core.actors.units.Raft;
+import core.actors.units.Rammer;
 import core.actors.units.Unit;
 import org.json.JSONObject;
 import utils.Vector2d;
@@ -85,12 +85,12 @@ public class GameLoader
                     unitINFO.getInt("cityID"), unitINFO.getInt("tribeId"), unitType);
             unit.setCurrentHP(unitINFO.getInt("currentHP"));
             unit.setStatus(Types.TURN_STATUS.FRESH);
-            if (unitType == Types.UNIT.BOAT){
-                ((Boat)unit).setBaseLandUnit(Types.UNIT.getTypeByKey(unitINFO.getInt("baseLandType")));
-            }else if (unitType == Types.UNIT.SHIP){
-                ((Ship)unit).setBaseLandUnit(Types.UNIT.getTypeByKey(unitINFO.getInt("baseLandType")));
-            }else if (unitType == Types.UNIT.BATTLESHIP){
-                ((Battleship)unit).setBaseLandUnit(Types.UNIT.getTypeByKey(unitINFO.getInt("baseLandType")));
+            if (unitType == Types.UNIT.RAFT){
+                ((Raft)unit).setBaseLandUnit(Types.UNIT.getTypeByKey(unitINFO.getInt("baseLandType")));
+            }else if (unitType == Types.UNIT.RAMMER){
+                ((Rammer)unit).setBaseLandUnit(Types.UNIT.getTypeByKey(unitINFO.getInt("baseLandType")));
+            }else if (unitType == Types.UNIT.BOMBER){
+                ((Bomber)unit).setBaseLandUnit(Types.UNIT.getTypeByKey(unitINFO.getInt("baseLandType")));
             }
             board.addActor(unit, Integer.parseInt(key));
         }

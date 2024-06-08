@@ -275,7 +275,7 @@ public class GameView extends JComponent {
                 paintImageRotated(g, j * CELL_SIZE, i * CELL_SIZE, (r == null) ? null : r.getImage(t), imgSize, panTranslate);
 
                 Types.BUILDING b = board.getBuildingAt(i,j);
-                if (b != null && b != Types.BUILDING.CUSTOMS_HOUSE && !(b.isTemple())) imgSize = CELL_SIZE;
+                if (b != null && b != Types.BUILDING.MARKET && !(b.isTemple())) imgSize = CELL_SIZE;
                 paintImageRotated(g, j*CELL_SIZE, i*CELL_SIZE, (b == null) ? null : b.getImage(), imgSize, panTranslate);
             }
         }
@@ -906,9 +906,9 @@ public class GameView extends JComponent {
                     weapon2 = t.getType().getWeaponImage(t.getTribeId());  // units can retaliate in Attack actions
 
                     this.effectType = EFFECT.SLASH;
-                    if (source.getType() == CATAPULT || source.getType() == SHIP || source.getType() == BATTLESHIP) {
+                    if (source.getType() == CATAPULT  || source.getType() == BOMBER) {
                         this.effectType = EFFECT.EXPLOSION;
-                    } else if (source.getType() == ARCHER || source.getType() == BOAT) {
+                    } else if (source.getType() == ARCHER || source.getType() == SCOUT) {
                         this.effectType = EFFECT.PIERCE;
                     }
                 } else if (a.getActionType() == CONVERT) {

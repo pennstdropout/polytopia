@@ -10,13 +10,13 @@ import java.util.Random;
 
 import static core.Types.BUILDING.*;
 
-public class BuildCustomHouseScr extends BaseScript {
+public class BuildMarketScr extends BaseScript {
 
-    //Selects the action that builds the Custom House in the best possible place.
+    //Selects the action that builds the Market in the best possible place.
 
     private Random rnd;
 
-    public BuildCustomHouseScr(Random rnd)
+    public BuildMarketScr(Random rnd)
     {
         this.rnd = rnd;
     }
@@ -24,7 +24,7 @@ public class BuildCustomHouseScr extends BaseScript {
     @Override
     public Pair<Action, Double> process(GameState gs, Actor ac)
     {
-        return new BuildingFunc().buildSupportBuilding(CUSTOMS_HOUSE, gs, actions, rnd);
+        return new BuildingFunc().buildSupportBuilding(MARKET, gs, actions, rnd);
     }
 
 }

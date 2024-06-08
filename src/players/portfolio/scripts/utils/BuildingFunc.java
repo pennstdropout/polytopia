@@ -28,8 +28,8 @@ public class BuildingFunc {
         Types.RESOURCE r = gs.getBoard().getResourceAt(neighPos.x, neighPos.y);
         switch (unique_building)
         {
-            case CUSTOMS_HOUSE:
-                return (t.isWater() && (b == null || b == PORT));
+            case MARKET:
+                return (b == WINDMILL || b == FORGE || b == SAWMILL);
             case WINDMILL:
                 return (r == CROPS || b == FARM);
             case FORGE:
@@ -179,7 +179,7 @@ public class BuildingFunc {
                 LinkedList<Vector2d> neighs = position.neighborhood(1, 0, gs.getBoard().getSize());
 
                 for (Vector2d neighPos : neighs) {
-                    Types.BUILDING supportBuilding = target.getMatchingBuilding();
+                    Types.BUILDING supportBuilding = target.getMatchingBuildings();
                     valid = validConstruction(gs, neighPos, supportBuilding, cityId, true);
                     if (valid) {
                         //Keep track of the best value for a neighbouring support building.
@@ -206,7 +206,7 @@ public class BuildingFunc {
             {
                 Vector2d targetPos = action.getTargetPos();
                 //1. Check that this is not a good place for a supporting building.
-                double goodForSupportVal = valueForSupportingBuilding(gs, targetPos, new Types.BUILDING[]{SAWMILL, CUSTOMS_HOUSE, WINDMILL, FORGE}, action.getCityId());
+                double goodForSupportVal = valueForSupportingBuilding(gs, targetPos, new Types.BUILDING[]{SAWMILL, MARKET, WINDMILL, FORGE}, action.getCityId());
                 double goodForBaseVal = valueForBaseBuilding(gs, targetPos, new Types.BUILDING[]{LUMBER_HUT, PORT, FARM, MINE}, action.getCityId());
                 //2. Check that this is not a good place for a base building.
                 double score = goodForSupportVal - goodForBaseVal;

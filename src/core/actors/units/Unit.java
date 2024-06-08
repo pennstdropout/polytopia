@@ -112,9 +112,10 @@ public abstract class Unit extends Actor
                 return false;
             //Rules for Dash
             case ARCHER:
-            case BATTLESHIP:
-            case BOAT:
-            case SHIP:
+            case RAFT:
+            case RAMMER:
+            case SCOUT:
+            case BOMBER:
             case WARRIOR:
             case SWORDMAN:
             case SUPERUNIT:
@@ -160,9 +161,10 @@ public abstract class Unit extends Actor
                     this.status = FINISHED;
                     break;
                 case ARCHER:
-                case BATTLESHIP:
-                case BOAT:
-                case SHIP:
+                case RAFT:
+                case RAMMER:
+                case SCOUT:
+                case BOMBER:
                 case WARRIOR:
                 case SWORDMAN:
                     if(newStatus == MOVED && this.status == FRESH) { this.status = MOVED; }

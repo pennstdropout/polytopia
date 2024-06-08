@@ -8,7 +8,6 @@ import core.actions.cityactions.Spawn;
 import core.actions.tribeactions.ResearchTech;
 import core.actors.Building;
 import core.actors.City;
-import core.actors.Tribe;
 import core.actors.units.Unit;
 import core.game.GameState;
 import core.game.TribeResult;
@@ -50,9 +49,9 @@ public class GameplayStats {
             "Num monuments", "Num temples", "Num buildings", "Num buildings PORT", "Num buildings MINE", "Num buildings FORGE", "Num buildings FARM", "Num buildings WINDMILL",
             "Num buildings CUSTOMS_HOUSE", "Num buildings LUMBER_HUT", "Num buildings SAWMILL",
     };
-    private final List<Types.TECHNOLOGY> farmTechs = Arrays.asList(ORGANIZATION, FARMING, SHIELDS, CONSTRUCTION);
+    private final List<Types.TECHNOLOGY> farmTechs = Arrays.asList(ORGANIZATION, FARMING, STRATEGY, CONSTRUCTION);
     private final List<Types.TECHNOLOGY> mountainTechs = Arrays.asList(CLIMBING, MINING, MEDITATION, SMITHERY, PHILOSOPHY);
-    private final List<Types.TECHNOLOGY> navalTechs = Arrays.asList(FISHING, WHALING, SAILING, NAVIGATION, AQUATISM);
+    private final List<Types.TECHNOLOGY> navalTechs = Arrays.asList(FISHING, AQUACULTURE, SAILING, NAVIGATION, AQUATISM);
     private final List<Types.TECHNOLOGY> rangeTechs = Arrays.asList(HUNTING, ARCHERY, FORESTRY, SPIRITUALISM, MATHEMATICS);
     private final List<Types.TECHNOLOGY> roadTechs = Arrays.asList(RIDING, ROADS, FREE_SPIRIT, CHIVALRY, TRADE);
 

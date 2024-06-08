@@ -9,6 +9,8 @@ import core.game.GameState;
 import core.actors.City;
 import utils.Vector2d;
 
+import java.util.List;
+
 public class Build extends CityAction
 {
     private Types.BUILDING buildingType;
@@ -42,7 +44,7 @@ public class Build extends CityAction
 
             //Buildings that must be unique in a city
             case SAWMILL:
-            case CUSTOMS_HOUSE:
+            case MARKET:
             case WINDMILL:
             case FORGE:
                 return isBuildable(gs, buildingType.getCost(), true);
@@ -103,13 +105,13 @@ public class Build extends CityAction
         }
 
         //Adjacency constraint
-        Types.BUILDING buildingNeeded = buildingType.getAdjacencyConstraint();
-        if(buildingNeeded != null)
+        List<Types.BUILDING> buildingNeeded = buildingType.getAdjacencyConstraint();
+        if(!buildingNeeded.isEmpty())
         {
             boolean adjFound = false;
             for(Vector2d adjPos : targetPos.neighborhood(1,0,board.getSize()))
             {
-                if(board.getBuildingAt(adjPos.x, adjPos.y) == buildingNeeded)
+                if(buildingNeeded.contains(board.getBuildingAt(adjPos.x, adjPos.y)))
                 {
                     adjFound = true;
                     break;

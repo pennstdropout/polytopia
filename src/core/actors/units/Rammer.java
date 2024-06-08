@@ -5,12 +5,12 @@ import utils.Vector2d;
 
 import static core.TribesConfig.*;
 
-public class Ship extends Unit
+public class Rammer extends Unit
 {
     private Types.UNIT baseLandUnit;
 
-    public Ship(Vector2d pos, int kills, boolean isVeteran, int cityId, int tribeId) {
-        super(SHIP_ATTACK, SHIP_DEFENCE, SHIP_MOVEMENT, -1, SHIP_RANGE, SHIP_COST, pos, kills, isVeteran, cityId, tribeId);
+    public Rammer(Vector2d pos, int kills, boolean isVeteran, int cityId, int tribeId) {
+        super(RAMMER_ATTACK, RAMMER_DEFENCE, RAMMER_MOVEMENT, -1, RAMMER_RANGE, RAMMER_COST, pos, kills, isVeteran, cityId, tribeId);
     }
 
     public Types.UNIT getBaseLandUnit() {
@@ -23,17 +23,17 @@ public class Ship extends Unit
 
     @Override
     public Types.UNIT getType() {
-        return Types.UNIT.SHIP;
+        return Types.UNIT.RAMMER;
     }
 
     @Override
-    public Ship copy(boolean hideInfo) {
-        Ship c = new Ship(getPosition(), getKills(), isVeteran(), getCityId(), getTribeId());
+    public Rammer copy(boolean hideInfo) {
+        Rammer c = new Rammer(getPosition(), getKills(), isVeteran(), getCityId(), getTribeId());
         c.setCurrentHP(getCurrentHP());
         c.setMaxHP(getMaxHP());
         c.setActorId(getActorId());
         c.setStatus(getStatus());
         c.setBaseLandUnit(getBaseLandUnit());
-        return hideInfo ? (Ship) c.hide() : c;
+        return hideInfo ? (Rammer) c.hide() : c;
     }
 }

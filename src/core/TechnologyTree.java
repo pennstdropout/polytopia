@@ -3,7 +3,6 @@ package core;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 import static core.Types.TECHNOLOGY.*;
@@ -106,7 +105,7 @@ public class TechnologyTree {
             researched[target.ordinal()] = true;
 
             //researching leaves of the tree may
-            if(target == SHIELDS || target == AQUATISM || target == CHIVALRY || target == CONSTRUCTION ||
+            if(target == STRATEGY || target == AQUATISM || target == CHIVALRY || target == CONSTRUCTION ||
                target == MATHEMATICS || target == NAVIGATION || target == SMITHERY ||
                target == SPIRITUALISM || target == TRADE || target == PHILOSOPHY)
             {

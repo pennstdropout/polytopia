@@ -24,6 +24,6 @@ public class ClearForestForCustomScr extends BaseScript {
     @Override
     public Pair<Action, Double> process(GameState gs, Actor ac)
     {
-        return new BuildingFunc().buildSupportBuilding(CUSTOMS_HOUSE, gs, actions, rnd);
+        return new BuildingFunc().buildSupportBuilding(MARKET, gs, actions, rnd);
     }
 }

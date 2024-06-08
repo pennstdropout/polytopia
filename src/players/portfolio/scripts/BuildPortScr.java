@@ -24,7 +24,7 @@ public class BuildPortScr extends BaseScript {
     @Override
     public Pair<Action, Double> process(GameState gs, Actor ac)
     {
-        return new BuildingFunc().buildBaseBuilding(PORT, CUSTOMS_HOUSE, gs, actions, rnd);
+        return new BuildingFunc().buildBaseBuilding(PORT, MARKET, gs, actions, rnd);
     }
 
 }

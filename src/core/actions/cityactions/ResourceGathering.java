@@ -1,15 +1,11 @@
 package core.actions.cityactions;
 
-import core.TribesConfig;
 import core.Types;
 import core.actions.Action;
 import core.actors.Tribe;
 import core.game.Board;
 import core.game.GameState;
 import core.actors.City;
-import utils.Vector2d;
-
-import java.util.LinkedList;
 
 public class ResourceGathering extends CityAction
 {
@@ -41,7 +37,7 @@ public class ResourceGathering extends CityAction
                 case FISH:
                     return t.getTechTree().isResearched(Types.TECHNOLOGY.FISHING);
                 case WHALES:
-                    return t.getTechTree().isResearched(Types.TECHNOLOGY.WHALING);
+                    return t.getTechTree().isResearched(Types.TECHNOLOGY.AQUACULTURE);
                 case FRUIT:
                     return t.getTechTree().isResearched(Types.TECHNOLOGY.ORGANIZATION);
             }

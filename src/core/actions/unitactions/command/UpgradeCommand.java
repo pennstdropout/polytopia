@@ -6,17 +6,22 @@ import core.actions.ActionCommand;
 import core.actions.unitactions.Upgrade;
 import core.actors.City;
 import core.actors.Tribe;
-import core.actors.units.Battleship;
-import core.actors.units.Boat;
-import core.actors.units.Ship;
+import core.actors.units.Bomber;
+import core.actors.units.Raft;
+import core.actors.units.Rammer;
 import core.actors.units.Unit;
 import core.game.Board;
 import core.game.GameState;
 
-import static core.Types.UNIT.*;
-import static core.Types.UNIT.SHIP;
+import static core.Types.UNIT.SCOUT;
+import static core.Types.UNIT.RAMMER;
+import static core.Types.UNIT.BOMBER;
 
 public class UpgradeCommand implements ActionCommand {
+
+    Types.UNIT target;
+
+    public UpgradeCommand(Types.UNIT target) {this.target = target;}
 
     @Override
     public boolean execute(Action a, GameState gs) {
@@ -29,25 +34,19 @@ public class UpgradeCommand implements ActionCommand {
         City city = (City) board.getActor(unit.getCityId());
 
         if(action.isFeasible(gs)){
-            Types.UNIT unitType = unit.getType();
-            Types.UNIT nextType;
-
-            //get the correct type - or nothing!
-            if(unitType == BOAT) nextType = SHIP;
-            else if(unitType == SHIP) nextType = BATTLESHIP;
-            else return false; //this shouldn't happen, isFeasible should've captured this case
-
             //Create the new unit
-            Unit newUnit = Types.UNIT.createUnit(unit.getPosition(), unit.getKills(), unit.isVeteran(), unit.getCityId(), unit.getTribeId(), nextType);
+            Unit newUnit = Types.UNIT.createUnit(unit.getPosition(), unit.getKills(), unit.isVeteran(), unit.getCityId(), unit.getTribeId(), target);
             newUnit.setCurrentHP(unit.getCurrentHP());
             newUnit.setMaxHP(unit.getMaxHP());
-            if(nextType == SHIP)
-                ((Ship)newUnit).setBaseLandUnit(((Boat)unit).getBaseLandUnit());
-            else
-                ((Battleship)newUnit).setBaseLandUnit(((Ship)unit).getBaseLandUnit());
+            if(target == RAMMER)
+                ((Rammer)newUnit).setBaseLandUnit(((Raft)unit).getBaseLandUnit());
+            else if(target == SCOUT)
+                ((Rammer)newUnit).setBaseLandUnit(((Raft)unit).getBaseLandUnit());
+            else if (target == BOMBER)
+                ((Bomber)newUnit).setBaseLandUnit(((Raft)unit).getBaseLandUnit());
 
             //adjustments in tribe and board.
-            tribe.subtractStars(nextType.getCost());
+            tribe.subtractStars(target.getCost());
 
             Types.TURN_STATUS turn_status = unit.getStatus();
             //We first remove the unit, so there's space for the new one to take its place.

@@ -10,9 +10,10 @@ import core.actions.unitactions.HealOthers;
 import core.actions.unitactions.Upgrade;
 import core.actors.City;
 import core.actors.Tribe;
-import core.actors.units.Battleship;
-import core.actors.units.Boat;
-import core.actors.units.Ship;
+import core.actors.units.Bomber;
+import core.actors.units.Raft;
+import core.actors.units.Rammer;
+import core.actors.units.Scout;
 import core.actors.units.Unit;
 import core.game.Board;
 import core.game.GameState;
@@ -267,12 +268,14 @@ public class InfoView extends JComponent {
         sb.append("<li><b>Range:</b> " + u.RANGE + "</li>");
         sb.append("<li><b>Status:</b> " + u.getStatus() + "</li>");
 
-        if(u.getType() == Types.UNIT.BOAT)
-            sb.append("<li><b>Land unit:</b> " + ((Boat)u).getBaseLandUnit() + "</li>");
-        else if(u.getType() == Types.UNIT.SHIP)
-            sb.append("<li><b>Land unit:</b> " + ((Ship)u).getBaseLandUnit() + "</li>");
-        else if(u.getType() == Types.UNIT.BATTLESHIP)
-            sb.append("<li><b>Land unit:</b> " + ((Battleship)u).getBaseLandUnit() + "</li>");
+        if(u.getType() == Types.UNIT.RAFT)
+            sb.append("<li><b>Land unit:</b> " + ((Raft)u).getBaseLandUnit() + "</li>");
+        else if(u.getType() == Types.UNIT.RAMMER)
+            sb.append("<li><b>Land unit:</b> " + ((Rammer)u).getBaseLandUnit() + "</li>");
+        else if(u.getType() == Types.UNIT.SCOUT)
+            sb.append("<li><b>Land unit:</b> " + ((Scout)u).getBaseLandUnit() + "</li>");
+        else if(u.getType() == Types.UNIT.BOMBER)
+            sb.append("<li><b>Land unit:</b> " + ((Bomber)u).getBaseLandUnit() + "</li>");
 
         sb.append("</ul>");
         return sb.toString();
@@ -635,8 +638,7 @@ public class InfoView extends JComponent {
                     if (e.getSource() instanceof JButton) {
                         Unit u = (Unit) gs.getActor(unitID);
                         Types.ACTION actionType = null;
-                        if(u.getType() == Types.UNIT.BOAT) actionType = UPGRADE_BOAT;
-                        if(u.getType() == Types.UNIT.SHIP) actionType = UPGRADE_SHIP;
+                        if(u.getType() == Types.UNIT.RAFT) actionType = UPGRADE_BOAT;
                         a = new Upgrade(actionType, unitID);
                     }
                     break;

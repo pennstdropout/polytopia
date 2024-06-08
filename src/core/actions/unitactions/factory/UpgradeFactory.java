@@ -17,14 +17,18 @@ public class UpgradeFactory implements ActionFactory {
         Unit unit = (Unit) actor;
         LinkedList<Action> upgradeActions = new LinkedList<>();
 
-        Types.ACTION actionType = null;
-        if(unit.getType() == Types.UNIT.BOAT) actionType = Types.ACTION.UPGRADE_BOAT;
-        if(unit.getType() == Types.UNIT.SHIP) actionType = Types.ACTION.UPGRADE_SHIP;
+        if(unit.getType() == Types.UNIT.RAFT) {
+            LinkedList<Types.ACTION> actionTypeList = new LinkedList<>();
+            actionTypeList.add(Types.ACTION.UPGRADE_TO_RAMMER);
+            actionTypeList.add(Types.ACTION.UPGRADE_TO_SCOUT);
+            actionTypeList.add(Types.ACTION.UPGRADE_TO_BOMBER);
 
-        Upgrade action = new Upgrade(actionType, unit.getActorId());
-
-        if(action.isFeasible(gs)){
-            upgradeActions.add(action);
+            for (Types.ACTION actionType : actionTypeList) {
+                Upgrade action = new Upgrade(actionType, unit.getActorId());
+                if(action.isFeasible(gs)){
+                    upgradeActions.add(action);
+                }
+            }
         }
         return upgradeActions;
     }

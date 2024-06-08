@@ -1,6 +1,5 @@
 package core.game;
 
-import core.Constants;
 import core.TechnologyTree;
 import core.Diplomacy;
 import core.TribesConfig;
@@ -12,7 +11,6 @@ import core.actors.units.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import utils.Vector2d;
-import utils.graph.*;
 
 import java.util.*;
 
@@ -386,7 +384,7 @@ public class Board {
 
         //We're actually creating a new unit
         Vector2d newPos = new Vector2d(x, y);
-        Boat boat = (Boat) Types.UNIT.createUnit(newPos, unit.getKills(), unit.isVeteran(), unit.getCityId(), unit.getTribeId(), Types.UNIT.BOAT);
+        Raft boat = (Raft) Types.UNIT.createUnit(newPos, unit.getKills(), unit.isVeteran(), unit.getCityId(), unit.getTribeId(), Types.UNIT.RAFT);
         boat.setCurrentHP(unit.getCurrentHP());
         boat.setMaxHP(unit.getMaxHP());
         boat.setBaseLandUnit(unit.getType());
@@ -425,14 +423,14 @@ public class Board {
 
     public Types.UNIT getBaseLandUnit(Unit unit) {
         switch (unit.getType()) {
-            case BOAT:
-                Boat boat = (Boat) unit;
+            case RAFT:
+                Raft boat = (Raft) unit;
                 return boat.getBaseLandUnit();
-            case SHIP:
-                Ship ship = (Ship) unit;
+            case RAMMER:
+                Rammer ship = (Rammer) unit;
                 return ship.getBaseLandUnit();
-            case BATTLESHIP:
-                Battleship battleship = (Battleship) unit;
+            case BOMBER:
+                Bomber battleship = (Bomber) unit;
                 return battleship.getBaseLandUnit();
             default:
                 throw new IllegalStateException("Unexpected value: " + unit.getType());

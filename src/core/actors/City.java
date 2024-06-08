@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import utils.Vector2d;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 public class City extends Actor{
 
@@ -166,7 +167,7 @@ public class City extends Actor{
                 if(!onlyMatching) addPopulation(tribe, building.type.getBonus() * multiplier);
                 applyBonus(gameState, building, false, onlyMatching, multiplier);
                 break;
-            case CUSTOMS_HOUSE:
+            case MARKET:
                 applyBonus(gameState, building, false, onlyMatching, multiplier);
                 break;
             case TEMPLE:
@@ -218,30 +219,31 @@ public class City extends Actor{
         {
             //For each position, if there's a building and of the production matching point
             Types.BUILDING b = board.getBuildingAt(adjPosition.x, adjPosition.y);
-            if(b != null && building.type.getMatchingBuilding() == b)
-            {
-                //Retrieve this building, which could be form this city or from another one from the tribe.
-                Building existingBuilding;
-                int cityId = board.getCityIdAt(adjPosition.x, adjPosition.y);
-                if(cityId == actorId)
-                {
-                    //the matching building belongs to this city
-                    existingBuilding = this.getBuilding(adjPosition.x, adjPosition.y);
-                }else if(tribe.controlsCity(cityId)) {
-                    //the matching building belongs to a city from a different tribe
-                    City city = (City) gameState.getActor(cityId);
-                    existingBuilding = city.getBuilding(adjPosition.x, adjPosition.y);
-                    cityToAddTo = city;
+            List<Types.BUILDING> matchingBuildings = building.type.getMatchingBuildings();
+            for (Types.BUILDING match : matchingBuildings) {
+                if (b != null && b == match) {
+                    //Retrieve this building, which could be form this city or from another one from the tribe.
+                    Building existingBuilding;
+                    int cityId = board.getCityIdAt(adjPosition.x, adjPosition.y);
+                    if (cityId == actorId) {
+                        //the matching building belongs to this city
+                        existingBuilding = this.getBuilding(adjPosition.x, adjPosition.y);
+                    } else if (tribe.controlsCity(cityId)) {
+                        //the matching building belongs to a city from a different tribe
+                        City city = (City) gameState.getActor(cityId);
+                        existingBuilding = city.getBuilding(adjPosition.x, adjPosition.y);
+                        cityToAddTo = city;
 
-                }else return; //This may happen if the building belongs to a city from another tribe.
+                    } else continue; //This may happen if the building belongs to a city from another tribe.
 
-                if(existingBuilding != null) {
-                    bonusToAdd = isBase ? existingBuilding.getBonus() : building.getBonus();
+                    if (existingBuilding != null) {
+                        bonusToAdd = isBase ? existingBuilding.getBonus() : building.getBonus();
 
-                    if (isPopulation)
-                        cityToAddTo.addPopulation(tribe, bonusToAdd * multiplier);
-                    else
-                        cityToAddTo.addProduction(bonusToAdd * multiplier);
+                        if (isPopulation)
+                            cityToAddTo.addPopulation(tribe, bonusToAdd * multiplier);
+                        else
+                            cityToAddTo.addProduction(bonusToAdd * multiplier);
+                    }
                 }
             }
         }
@@ -327,7 +329,7 @@ public class City extends Actor{
      * @return the building at (x,y), null if no building there.
      */
     public Building getBuilding(int x, int y){
-        for(Building building :buildings){
+        for(Building building : buildings){
             if (building.position.x == x && building.position.y == y){
                 return building;
             }

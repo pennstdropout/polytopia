@@ -5,12 +5,12 @@ import utils.Vector2d;
 
 import static core.TribesConfig.*;
 
-public class Battleship extends Unit
+public class Raft extends Unit
 {
     private Types.UNIT baseLandUnit;
 
-    public Battleship(Vector2d pos, int kills, boolean isVeteran, int cityId, int tribeId) {
-        super(BATTLESHIP_ATTACK, BATTLESHIP_DEFENCE, BATTLESHIP_MOVEMENT, -1, BATTLESHIP_RANGE, BATTLESHIP_COST, pos, kills, isVeteran, cityId, tribeId);
+    public Raft(Vector2d pos, int kills, boolean isVeteran, int cityId, int tribeId) {
+        super(RAFT_ATTACK, RAFT_DEFENCE, RAFT_MOVEMENT, -1, RAFT_RANGE, RAFT_COST, pos, kills, isVeteran, cityId, tribeId);
     }
 
     public Types.UNIT getBaseLandUnit() {
@@ -23,17 +23,17 @@ public class Battleship extends Unit
 
     @Override
     public Types.UNIT getType() {
-        return Types.UNIT.BATTLESHIP;
+        return Types.UNIT.RAFT;
     }
 
     @Override
-    public Battleship copy(boolean hideInfo) {
-        Battleship c = new Battleship(getPosition(), getKills(), isVeteran(), getCityId(), getTribeId());
+    public Raft copy(boolean hideInfo) {
+        Raft c = new Raft(getPosition(), getKills(), isVeteran(), getCityId(), getTribeId());
         c.setCurrentHP(getCurrentHP());
         c.setMaxHP(getMaxHP());
         c.setActorId(getActorId());
         c.setStatus(getStatus());
         c.setBaseLandUnit(getBaseLandUnit());
-        return hideInfo ? (Battleship) c.hide() : c;
+        return hideInfo ? (Raft) c.hide() : c;
     }
 }

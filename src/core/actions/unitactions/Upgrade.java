@@ -24,8 +24,9 @@ public class Upgrade extends UnitAction
         TechnologyTree ttree = tribe.getTechTree();
 
         int stars = gs.getTribe(unit.getTribeId()).getStars();
-        return ((unit.getType() == BOAT && ttree.isResearched(Types.TECHNOLOGY.SAILING) && stars >= SHIP.getCost()) ||
-                (unit.getType() == SHIP && ttree.isResearched(Types.TECHNOLOGY.NAVIGATION) && stars >= BATTLESHIP.getCost()));
+        return ((unit.getType() == RAFT && ttree.isResearched(Types.TECHNOLOGY.AQUACULTURE) && stars >= RAMMER.getCost()) ||
+                (unit.getType() == RAFT && ttree.isResearched(Types.TECHNOLOGY.SAILING) && stars >= SCOUT.getCost()) ||
+                (unit.getType() == RAFT && ttree.isResearchable(Types.TECHNOLOGY.NAVIGATION) && stars >= BOMBER.getCost()));
     }
 
     @Override

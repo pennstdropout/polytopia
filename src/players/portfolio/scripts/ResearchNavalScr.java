@@ -2,7 +2,6 @@ package players.portfolio.scripts;
 
 import core.Types;
 import core.actions.Action;
-import core.actions.unitactions.MakeVeteran;
 import core.actors.Actor;
 import core.game.GameState;
 import players.portfolio.scripts.utils.MilitaryFunc;
@@ -33,7 +32,7 @@ public class ResearchNavalScr extends BaseScript {
 
         ArrayList<Types.TECHNOLOGY> techs = new ArrayList<>();
         techs.add(FISHING);
-        techs.add(WHALING);
+        techs.add(AQUACULTURE);
         techs.add(SAILING);
         techs.add(NAVIGATION);
         techs.add(AQUATISM);

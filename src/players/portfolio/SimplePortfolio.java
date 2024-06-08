@@ -2,7 +2,6 @@ package players.portfolio;
 
 import core.Types;
 import core.actions.Action;
-import core.actions.cityactions.Build;
 import core.actors.Actor;
 import core.actors.City;
 import core.actors.units.Unit;
@@ -12,9 +11,6 @@ import players.portfolio.scripts.*;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.TreeMap;
-import java.util.logging.Level;
-
-import static core.Types.BUILDING.PORT;
 
 public class SimplePortfolio extends Portfolio
 {
@@ -45,8 +41,8 @@ public class SimplePortfolio extends Portfolio
         portfolio.put(Types.ACTION.HEAL_OTHERS, new BaseScript[]{new BaseScript()});
         portfolio.put(Types.ACTION.MAKE_VETERAN, new BaseScript[]{new BaseScript()});
         portfolio.put(Types.ACTION.RECOVER, new BaseScript[]{new BaseScript()});
-        portfolio.put(Types.ACTION.UPGRADE_BOAT, new BaseScript[]{new BaseScript()});
-        portfolio.put(Types.ACTION.UPGRADE_SHIP, new BaseScript[]{new BaseScript()});
+        portfolio.put(Types.ACTION.UPGRADE_TO_SCOUT, new BaseScript[]{new BaseScript()});
+        portfolio.put(Types.ACTION.UPGRADE_TO_BOMBER, new BaseScript[]{new BaseScript()});
         portfolio.put(Types.ACTION.END_TURN, new BaseScript[]{new BaseScript()});
 
         //Single-action scripts
@@ -86,7 +82,7 @@ public class SimplePortfolio extends Portfolio
         });
 
         portfolio.put(Types.ACTION.BUILD, new BaseScript[]{ //10
-                new BuildCustomHouseScr(rnd),
+                new BuildMarketScr(rnd),
                 new BuildSawmillScr(rnd),
                 new BuildWindmillScr(rnd),
                 new BuildForgeScr(rnd),

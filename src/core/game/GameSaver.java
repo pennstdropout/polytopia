@@ -5,9 +5,10 @@ import core.actors.Building;
 import core.actors.City;
 import core.actors.Temple;
 import core.actors.Tribe;
-import core.actors.units.Battleship;
-import core.actors.units.Boat;
-import core.actors.units.Ship;
+import core.actors.units.Bomber;
+import core.actors.units.Raft;
+import core.actors.units.Rammer;
+import core.actors.units.Scout;
 import core.actors.units.Unit;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -108,12 +109,14 @@ class GameSaver {
             for(Unit u: unitList){
                 JSONObject uInfo = new JSONObject();
                 uInfo.put("type", u.getType().getKey());
-                if (u.getType() == Types.UNIT.BOAT){
-                    uInfo.put("baseLandType", ((Boat)u).getBaseLandUnit().getKey());
-                }else if (u.getType() == Types.UNIT.SHIP){
-                    uInfo.put("baseLandType", ((Ship)u).getBaseLandUnit().getKey());
-                }else if (u.getType() == Types.UNIT.BATTLESHIP){
-                    uInfo.put("baseLandType", ((Battleship)u).getBaseLandUnit().getKey());
+                if (u.getType() == Types.UNIT.RAFT){
+                    uInfo.put("baseLandType", ((Raft)u).getBaseLandUnit().getKey());
+                }else if (u.getType() == Types.UNIT.RAMMER){
+                    uInfo.put("baseLandType", ((Rammer)u).getBaseLandUnit().getKey());
+                }else if (u.getType() == Types.UNIT.SCOUT){
+                    uInfo.put("baseLandType", ((Scout)u).getBaseLandUnit().getKey());
+                }else if (u.getType() == Types.UNIT.BOMBER){
+                    uInfo.put("baseLandType", ((Bomber)u).getBaseLandUnit().getKey());
                 }
                 uInfo.put("x", u.getPosition().x);
                 uInfo.put("y", u.getPosition().y);

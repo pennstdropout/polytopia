@@ -5,15 +5,12 @@ import core.Types;
 import core.actions.Action;
 import core.actions.cityactions.*;
 import core.actions.tribeactions.BuildRoad;
-import core.actions.tribeactions.EndTurn;
 import core.actions.tribeactions.ResearchTech;
 import core.actions.tribeactions.SendStars;
 import core.actions.unitactions.*;
 import core.actors.Building;
 import core.actors.City;
 import core.actors.Tribe;
-import core.actors.units.Archer;
-import core.actors.units.Catapult;
 import core.actors.units.Unit;
 import core.game.Board;
 import core.game.GameState;
@@ -296,7 +293,7 @@ public class SimpleAgent extends Agent {
             case MINING:
             case FISHING:
             case HUNTING:
-            case WHALING:
+            case AQUACULTURE:
                 return 5;
             case FARMING: //These allow the agent to gather more resources or be more well armed in future turns but provides less immediate benefit
             case AQUATISM:
@@ -304,7 +301,7 @@ public class SimpleAgent extends Agent {
             case FORESTRY:
             case ARCHERY:
             case SAILING:
-            case SHIELDS:
+            case STRATEGY:
             case CHIVALRY:
                 return 4;
             default:
@@ -378,7 +375,7 @@ public class SimpleAgent extends Agent {
             case MINE:
             case FORGE:
             case WINDMILL:
-            case CUSTOMS_HOUSE:
+            case MARKET:
                 score = 4; //These increase population in a while costing less to build so these cases are weighted higher
 //                break;
             case PORT:
@@ -411,7 +408,7 @@ public class SimpleAgent extends Agent {
     private int evalUpgrade(Action a, GameState gs, Tribe thisTribe) {
         Unit u = (Unit) gs.getActor(((Upgrade) a).getUnitId());
 
-        if (u.getType() == Types.UNIT.BATTLESHIP) { // It's a ship to a battleship
+        if (u.getType() == Types.UNIT.BOMBER) { // It's a ship to a battleship
             if (thisTribe.getMaxProduction(gs) > 5 && thisTribe.getStars() > 8) { //If the agent has a good amount of stars and good production then its worth an upgrade
 
                 return 3;
@@ -484,7 +481,7 @@ public class SimpleAgent extends Agent {
         int allegianceVal = d.getAllegianceStatus()[con.getUnitId()][con.getTargetId()];
         if (defender != null) {
             switch (defender.getType()) {
-                case BATTLESHIP:
+                case BOMBER:
                 case SUPERUNIT:
                 case SWORDMAN:
                 case KNIGHT:
@@ -495,8 +492,9 @@ public class SimpleAgent extends Agent {
                         return 2;
                     }
                 case MIND_BENDER:
-                case BOAT:
-                case SHIP:
+                case RAFT:
+                case RAMMER:
+                case SCOUT:
                 case WARRIOR:
                     if (allegianceVal < 0) {
                         return 4;

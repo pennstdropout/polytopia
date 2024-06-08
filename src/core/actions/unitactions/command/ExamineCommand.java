@@ -7,7 +7,7 @@ import core.actions.ActionCommand;
 import core.actions.unitactions.Examine;
 import core.actors.City;
 import core.actors.Tribe;
-import core.actors.units.Battleship;
+import core.actors.units.Bomber;
 import core.actors.units.Unit;
 import core.game.Board;
 import core.game.GameState;
@@ -48,11 +48,11 @@ public class ExamineCommand implements ActionCommand {
                     Vector2d spawnPos = unit.getPosition().copy();
                     Types.TERRAIN terr = board.getTerrainAt(spawnPos.x, spawnPos.y);
                     //instead of a super unit, in the water we create a Battleship of out a warrior
-                    Types.UNIT unitType = terr.isWater() ? Types.UNIT.BATTLESHIP : Types.UNIT.SUPERUNIT;
+                    Types.UNIT unitType = terr.isWater() ? Types.UNIT.BOMBER : Types.UNIT.SUPERUNIT;
                     Unit newUnit = Types.UNIT.createUnit(spawnPos, 0, false, -1, unit.getTribeId(), unitType);
                     if(terr.isWater())
                     {
-                        ((Battleship)newUnit).setBaseLandUnit(Types.UNIT.WARRIOR);
+                        ((Bomber)newUnit).setBaseLandUnit(Types.UNIT.WARRIOR);
                     }
 
                     Unit unitInCity = board.getUnitAt(spawnPos.x, spawnPos.y);

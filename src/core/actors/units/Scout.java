@@ -5,12 +5,12 @@ import utils.Vector2d;
 
 import static core.TribesConfig.*;
 
-public class Boat extends Unit
+public class Scout extends Unit
 {
     private Types.UNIT baseLandUnit;
 
-    public Boat(Vector2d pos, int kills, boolean isVeteran, int cityId, int tribeId) {
-        super(BOAT_ATTACK, BOAT_DEFENCE, BOAT_MOVEMENT, -1, BOAT_RANGE, BOAT_COST, pos, kills, isVeteran, cityId, tribeId);
+    public Scout(Vector2d pos, int kills, boolean isVeteran, int cityId, int tribeId) {
+        super(SCOUT_ATTACK, SCOUT_DEFENCE, SCOUT_MOVEMENT, -1, SCOUT_RANGE, SCOUT_COST, pos, kills, isVeteran, cityId, tribeId);
     }
 
     public Types.UNIT getBaseLandUnit() {
@@ -23,17 +23,17 @@ public class Boat extends Unit
 
     @Override
     public Types.UNIT getType() {
-        return Types.UNIT.BOAT;
+        return Types.UNIT.SCOUT;
     }
 
     @Override
-    public Boat copy(boolean hideInfo) {
-        Boat c = new Boat(getPosition(), getKills(), isVeteran(), getCityId(), getTribeId());
+    public Scout copy(boolean hideInfo) {
+        Scout c = new Scout(getPosition(), getKills(), isVeteran(), getCityId(), getTribeId());
         c.setCurrentHP(getCurrentHP());
         c.setMaxHP(getMaxHP());
         c.setActorId(getActorId());
         c.setStatus(getStatus());
         c.setBaseLandUnit(getBaseLandUnit());
-        return hideInfo ? (Boat) c.hide() : c;
+        return hideInfo ? (Scout) c.hide() : c;
     }
 }

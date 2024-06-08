@@ -7,7 +7,6 @@ import core.game.GameState;
 import players.portfolio.scripts.utils.MilitaryFunc;
 import utils.Pair;
 
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -33,7 +32,7 @@ public class ResearchFarmsScr extends BaseScript {
         ArrayList<Types.TECHNOLOGY> techs = new ArrayList<>();
         techs.add(ORGANIZATION);
         techs.add(FARMING);
-        techs.add(SHIELDS);
+        techs.add(STRATEGY);
         techs.add(CONSTRUCTION);
 
         return new MilitaryFunc().getPreferredResearchTech(gs, actions, techs, rnd);

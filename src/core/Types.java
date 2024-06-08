@@ -12,6 +12,7 @@ import utils.Vector2d;
 
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 import static core.TribesConfig.*;
 import static core.Types.BUILDING.MONUMENT_STATUS.*;
@@ -35,9 +36,9 @@ public class Types {
         MINING(2, CLIMBING),
         ROADS(2, RIDING),
         SAILING(2, FISHING),
-        SHIELDS(2, ORGANIZATION),
-        WHALING(2, FISHING),
-        AQUATISM(3, WHALING),
+        STRATEGY(2, ORGANIZATION),
+        AQUACULTURE(2, FISHING),
+        AQUATISM(3, AQUACULTURE),
         CHIVALRY(3, FREE_SPIRIT),
         CONSTRUCTION(3, FARMING),
         MATHEMATICS(3, FORESTRY),
@@ -105,7 +106,7 @@ public class Types {
                 new Color(255, 153, 0), new Color(255, 171, 47), new Color(145, 87, 0)),
         AI_MO(9, "Ai-Mo", MEDITATION, WARRIOR,
                 new Color(54, 226, 170), new Color(168, 255, 229), new Color(35, 145, 109)),
-        QUETZALI(10, "Quetzali", SHIELDS, DEFENDER,
+        QUETZALI(10, "Quetzali", STRATEGY, DEFENDER,
                 new Color(39, 92, 74), new Color(79, 165, 136), new Color(20, 51, 41)),
         YADAKK(11, "Yadakk", ROADS, WARRIOR,
                 new Color(125, 38, 28), new Color(177, 70, 57), new Color(92, 33, 13));
@@ -159,7 +160,7 @@ public class Types {
         FISH(0, "img/resource/fish2.png", null,'h', FISH_COST, FISH_POP, FISHING),
         FRUIT(1, "img/resource/fruit2.png", null, 'f', FRUIT_COST, FRUIT_POP, ORGANIZATION),
         ANIMAL(2, "img/resource/animal2.png", null, 'a', ANIMAL_COST, ANIMAL_POP, HUNTING),
-        WHALES(3, "img/resource/whale2.png", "img/resource/whale3.png", 'w', WHALES_COST, WHALES_STARS, WHALING),
+        WHALES(3, "img/resource/whale2.png", "img/resource/whale3.png", 'w', WHALES_COST, WHALES_STARS, AQUACULTURE),
         ORE(5, "img/resource/ore2.png", null, 'o', 0, 0, MINING),
         CROPS(6, "img/resource/crops2.png", null, 'c', 0, 0, FARMING),
         RUINS(7, "img/resource/ruins2.png", null, 'r', 0, 0, null);
@@ -227,7 +228,7 @@ public class Types {
         FORGE (2,"img/building/forge2.png", FORGE_COST, FORGE_BONUS, SMITHERY, new HashSet<>(Collections.singletonList(PLAIN))),
         FARM (3, "img/building/farm2.png", FARM_COST, FARM_BONUS, FARMING, new HashSet<>(Collections.singletonList(PLAIN))),
         WINDMILL (4,"img/building/windmill2.png", WIND_MILL_COST, WIND_MILL_BONUS, CONSTRUCTION, new HashSet<>(Collections.singletonList(PLAIN))),
-        CUSTOMS_HOUSE(5,"img/building/custom_house2.png", CUSTOMS_COST, CUSTOMS_BONUS, TRADE, new HashSet<>(Collections.singletonList(PLAIN))),
+        MARKET(5,"img/building/custom_house2.png", MARKET_COST, MARKET_BONUS, TRADE, new HashSet<>(Collections.singletonList(PLAIN))),
         LUMBER_HUT(6,"img/building/lumber_hut2.png", LUMBER_HUT_COST, LUMBER_HUT_BONUS, FORESTRY, new HashSet<>(Collections.singletonList(FOREST))),
         SAWMILL (7,"img/building/sawmill2.png", SAW_MILL_COST, SAW_MILL_BONUS, MATHEMATICS, new HashSet<>(Collections.singletonList(PLAIN))),
         TEMPLE (8, "img/building/temple2.png", TEMPLE_COST, TEMPLE_BONUS, FREE_SPIRIT, new HashSet<>(Collections.singletonList(PLAIN))),
@@ -249,7 +250,7 @@ public class Types {
                 case "FORGE": return FORGE;
                 case "FARM": return FARM;
                 case "WINDMILL": return WINDMILL;
-                case "CUSTOMS_HOUSE": return CUSTOMS_HOUSE;
+                case "MARKET": return MARKET;
                 case "LUMBER_HUT": return LUMBER_HUT;
                 case "SAWMILL": return SAWMILL;
                 case "TEMPLE": return TEMPLE;
@@ -319,29 +320,38 @@ public class Types {
             return null;
         }
 
-        public Types.BUILDING getAdjacencyConstraint()
+        public List<BUILDING> getAdjacencyConstraint()
         {
-            if(this == CUSTOMS_HOUSE) return PORT;
-            if(this == WINDMILL) return FARM;
-            if(this == FORGE) return MINE;
-            if(this == SAWMILL) return LUMBER_HUT;
-            return null;
+            List<Types.BUILDING> res = new ArrayList<>();
+            if(this == MARKET) {
+                res.add(WINDMILL);
+                res.add(MINE);
+                res.add(LUMBER_HUT);
+            }
+            else if(this == WINDMILL) res.add(FARM);
+            else if(this == FORGE) res.add(MINE);
+            else if(this == SAWMILL) res.add(LUMBER_HUT);
+            return res;
         }
 
-        public BUILDING getMatchingBuilding()
+        public List<BUILDING> getMatchingBuildings()
         {
+            List<BUILDING> res = new ArrayList<>();
             switch (this)
             {
-                case PORT: return CUSTOMS_HOUSE;
-                case FARM: return WINDMILL;
-                case MINE: return FORGE;
-                case LUMBER_HUT: return SAWMILL;
-                case CUSTOMS_HOUSE: return PORT;
-                case WINDMILL: return FARM;
-                case FORGE: return MINE;
-                case SAWMILL: return LUMBER_HUT;
+                case FARM: res.add(WINDMILL);
+                case MINE: res.add(FORGE);
+                case LUMBER_HUT: res.add(SAWMILL);
+                case WINDMILL: res.add(FARM);
+                case FORGE: res.add(MINE);
+                case SAWMILL: res.add(LUMBER_HUT);
+                case MARKET: {
+                    res.add(SAWMILL);
+                    res.add(WINDMILL);
+                    res.add(FORGE);
+                }
             }
-            return null;
+            return res;
         }
 
         public boolean isBase()
@@ -492,15 +502,17 @@ public class Types {
     {
         WARRIOR (0,"img/unit/warrior/", "img/weapons/melee/tile006.png", WARRIOR_COST, null, WARRIOR_POINTS), //+10
         RIDER (1,"img/unit/rider/", "img/weapons/melee/tile001.png", RIDER_COST, RIDING, RIDER_POINTS), //+15
-        DEFENDER (2,"img/unit/defender/", "img/weapons/melee/tile002.png", DEFENDER_COST, SHIELDS, DEFENDER_POINTS), // +15
+        CLOAK (1,"img/unit/rider/", "img/weapons/melee/tile001.png", CLOAK_COST, RIDING, CLOAK_POINTS), //+15
+        DEFENDER (2,"img/unit/defender/", "img/weapons/melee/tile002.png", DEFENDER_COST, STRATEGY, DEFENDER_POINTS), // +15
         SWORDMAN (3,"img/unit/swordsman/", "img/weapons/melee/tile000.png", SWORDMAN_COST, SMITHERY, SWORDMAN_POINTS), //+25
         ARCHER (4,"img/unit/archer/", "img/weapons/arrows/", ARCHER_COST, ARCHERY, ARCHER_POINTS),//+15
         CATAPULT (5,"img/unit/catapult/", "img/weapons/bombs/rock.png", CATAPULT_COST, MATHEMATICS, CATAPULT_POINTS), //+40
         KNIGHT (6,"img/unit/knight/", "img/weapons/melee/spear.png", KNIGHT_COST, CHIVALRY, KNIGHT_POINTS), //+40
         MIND_BENDER(7,"img/unit/mind_bender/", "img/weapons/effects/bender/", MINDBENDER_COST, PHILOSOPHY, MINDBENDER_POINTS), //+25
-        BOAT(8,"img/unit/boat/", "img/weapons/arrows/boat.png", BOAT_COST, SAILING, BOAT_POINTS), //+0
-        SHIP(9,"img/unit/ship/", "img/weapons/bombs/", SHIP_COST, SAILING, SHIP_POINTS),//+0
-        BATTLESHIP(10,"img/unit/battleship/", "img/weapons/bombs/", BATTLESHIP_COST, NAVIGATION, BATTLESHIP_POINTS),//+0
+        RAFT(8,"img/unit/boat/", "img/weapons/arrows/boat.png", RAFT_COST, FISHING, RAFT_POINTS), //+0
+        RAMMER(9,"img/unit/ship/", "img/weapons/bombs/", RAMMER_COST, AQUACULTURE, RAMMER_POINTS),//+0
+        SCOUT(9,"img/unit/ship/", "img/weapons/bombs/", SCOUT_COST, SAILING, SCOUT_POINTS),//+0
+        BOMBER(10,"img/unit/battleship/", "img/weapons/bombs/", BOMBER_COST, NAVIGATION, BOMBER_POINTS),//+0
         SUPERUNIT(11, "img/unit/superunit/", "img/weapons/melee/tile003.png", SUPERUNIT_COST, null, SUPERUNIT_POINTS); //+50
 
         private int key;
@@ -522,15 +534,16 @@ public class Types {
             switch(type) {
                 case "WARRIOR": return WARRIOR;
                 case "RIDER": return RIDER;
+                case "CLOAK": return CLOAK;
                 case "DEFENDER": return DEFENDER;
                 case "SWORDMAN": return SWORDMAN;
                 case "ARCHER": return ARCHER;
                 case "CATAPULT": return CATAPULT;
                 case "KNIGHT": return KNIGHT;
                 case "MIND_BENDER": return MIND_BENDER;
-                case "BOAT": return BOAT;
-                case "SHIP": return SHIP;
-                case "BATTLESHIP": return BATTLESHIP;
+                case "RAFT": return RAFT;
+                case "RAMMER": return RAMMER;
+                case "BOMBER": return BOMBER;
                 case "SUPERUNIT": return SUPERUNIT;
             }
             return null;
@@ -539,7 +552,7 @@ public class Types {
         public Image getImage(int tribeKey) { return ImageIO.GetInstance().getImage(imageFile + tribeKey + ".png"); }
         public String getImageFile() { return imageFile; }
         public Image getWeaponImage(int tribeKey) {
-            if (this == SHIP || this == BATTLESHIP || this == ARCHER || this == MIND_BENDER) {
+            if (this == RAMMER /*|| this == SCOUT*/ || this == BOMBER || this == ARCHER || this == MIND_BENDER) {
                 return ImageIO.GetInstance().getImage(weapon + tribeKey + ".png");
             }
             return ImageIO.GetInstance().getImage(weapon);
@@ -559,15 +572,16 @@ public class Types {
             {
                 case WARRIOR: return new Warrior(pos, kills, isVeteran, ownerID, tribeID);
                 case RIDER: return new Rider(pos, kills, isVeteran, ownerID, tribeID);
+                case CLOAK: return new Cloak(pos, kills, isVeteran, ownerID, tribeID);
                 case DEFENDER: return new Defender(pos, kills, isVeteran, ownerID, tribeID);
                 case SWORDMAN: return new Swordman(pos, kills, isVeteran, ownerID, tribeID);
                 case ARCHER: return new Archer(pos, kills, isVeteran, ownerID, tribeID);
                 case CATAPULT: return new Catapult(pos, kills, isVeteran, ownerID, tribeID);
                 case KNIGHT: return new Knight(pos, kills, isVeteran, ownerID, tribeID);
                 case MIND_BENDER: return new MindBender(pos, kills, isVeteran, ownerID, tribeID);
-                case BOAT: return new Boat(pos, kills, isVeteran, ownerID, tribeID);
-                case SHIP: return new Ship(pos, kills, isVeteran, ownerID, tribeID);
-                case BATTLESHIP: return new Battleship(pos, kills, isVeteran, ownerID, tribeID);
+                case RAFT: return new Raft(pos, kills, isVeteran, ownerID, tribeID);
+                case RAMMER: return new Rammer(pos, kills, isVeteran, ownerID, tribeID);
+                case BOMBER: return new Bomber(pos, kills, isVeteran, ownerID, tribeID);
                 case SUPERUNIT: return new SuperUnit(pos, kills, isVeteran, ownerID, tribeID);
 
                 default:
@@ -579,18 +593,18 @@ public class Types {
 
         public boolean spawnable()
         {
-            return !(this == BOAT || this == SHIP || this == BATTLESHIP || this == SUPERUNIT);
+            return !(this == RAFT || this == RAMMER || this == SCOUT || this == BOMBER || this == SUPERUNIT);
         }
 
         public boolean isWaterUnit()
         {
-            return this == BOAT || this == SHIP || this == BATTLESHIP;
+            return this == RAFT || this == RAMMER || this == SCOUT || this == BOMBER;
         }
 
 
         public boolean isRanged()
         {
-            return this == BOAT || this == SHIP || this == BATTLESHIP || this == ARCHER  || this == CATAPULT ;
+            return this == SCOUT || this == BOMBER || this == ARCHER  || this == CATAPULT ;
         }
 
         public boolean canFortify()
@@ -802,8 +816,9 @@ public class Types {
 
         //others
         CLIMB_MOUNTAIN(null, CLIMBING),
-        UPGRADE_BOAT("img/actions/upgrade.png", SAILING),
-        UPGRADE_SHIP("img/actions/upgrade.png", NAVIGATION);
+        UPGRADE_TO_RAMMER("img/actions/upgrade.png", AQUACULTURE),
+        UPGRADE_TO_SCOUT("img/actions/upgrade.png", SAILING),
+        UPGRADE_TO_BOMBER("img/actions/upgrade.png", NAVIGATION);
 
         private String imgPath;
         private TECHNOLOGY tech;  // Requires this technology to perform action
@@ -851,8 +866,9 @@ public class Types {
                 case MAKE_VETERAN: return new MakeVeteranCommand();
                 case MOVE: return new MoveCommand();
                 case RECOVER: return new RecoverCommand();
-                case UPGRADE_BOAT:
-                case UPGRADE_SHIP: return new UpgradeCommand();
+                case UPGRADE_TO_RAMMER: return new UpgradeCommand(RAMMER);
+                case UPGRADE_TO_SCOUT: return new UpgradeCommand(SCOUT);
+                case UPGRADE_TO_BOMBER: return new UpgradeCommand(BOMBER);
 
             }
             System.out.println("ERROR: ActionCommand for action type " + this + " not implemented.");
