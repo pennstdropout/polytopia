@@ -206,10 +206,13 @@ public class City extends Actor{
     private void applyBonus(GameState gameState, Building building, boolean isPopulation, boolean onlyMatching, int multiplier){
 
         int bonusToAdd;
+        ArrayList<Types.BUILDING> btest = new ArrayList<>();
         boolean isBase = building.type.isBase();
         City cityToAddTo = this;
         Board board = gameState.getBoard();
         Tribe tribe = gameState.getTribe(this.tribeId);
+        if (building.type == Types.BUILDING.MARKET) { System.out.println(cityToAddTo.production); }
+
 
         //Population added by the base building.
         if(isBase && isPopulation && !onlyMatching) addPopulation(tribe, multiplier * building.getBonus());
@@ -222,7 +225,8 @@ public class City extends Actor{
             List<Types.BUILDING> matchingBuildings = building.type.getMatchingBuildings();
             for (Types.BUILDING match : matchingBuildings) {
                 if (b != null && b == match) {
-                    //Retrieve this building, which could be form this city or from another one from the tribe.
+                    btest.add(b);
+                    //Retrieve this building, which could be from this city or from another one from the tribe.
                     Building existingBuilding;
                     int cityId = board.getCityIdAt(adjPosition.x, adjPosition.y);
                     if (cityId == actorId) {
@@ -233,7 +237,6 @@ public class City extends Actor{
                         City city = (City) gameState.getActor(cityId);
                         existingBuilding = city.getBuilding(adjPosition.x, adjPosition.y);
                         cityToAddTo = city;
-
                     } else continue; //This may happen if the building belongs to a city from another tribe.
 
                     if (existingBuilding != null) {
@@ -241,9 +244,27 @@ public class City extends Actor{
 
                         if (isPopulation)
                             cityToAddTo.addPopulation(tribe, bonusToAdd * multiplier);
-                        else
+                        else {
                             cityToAddTo.addProduction(bonusToAdd * multiplier);
+                        }
+                        building.levelChange(multiplier);
+                        existingBuilding.levelChange(multiplier);
                     }
+                }
+            }
+            if (building.type == Types.BUILDING.MARKET) {
+                System.out.println("--------------------------BUILT MARKET------------------------------");
+                System.out.println(building.position);
+                System.out.println();
+                System.out.println(cityToAddTo.production);
+                System.out.println();
+                for (Types.BUILDING bt : btest) {
+                    System.out.println(bt);
+                }
+                try {
+                    Thread.sleep(1000000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
             }
         }

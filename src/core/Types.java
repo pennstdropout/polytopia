@@ -326,8 +326,8 @@ public class Types {
             List<Types.BUILDING> res = new ArrayList<>();
             if(this == MARKET) {
                 res.add(WINDMILL);
-                res.add(MINE);
-                res.add(LUMBER_HUT);
+                res.add(FORGE);
+                res.add(SAWMILL);
             }
             else if(this == WINDMILL) res.add(FARM);
             else if(this == FORGE) res.add(MINE);
@@ -340,17 +340,29 @@ public class Types {
             List<BUILDING> res = new ArrayList<>();
             switch (this)
             {
-                case FARM: res.add(WINDMILL);
-                case MINE: res.add(FORGE);
-                case LUMBER_HUT: res.add(SAWMILL);
-                case WINDMILL: res.add(FARM);
-                case FORGE: res.add(MINE);
-                case SAWMILL: res.add(LUMBER_HUT);
-                case MARKET: {
+                case FARM:
+                    res.add(WINDMILL);
+                    break;
+                case MINE:
+                    res.add(FORGE);
+                    break;
+                case LUMBER_HUT:
+                    res.add(SAWMILL);
+                    break;
+                case WINDMILL:
+                    res.add(FARM);
+                    break;
+                case FORGE:
+                    res.add(MINE);
+                    break;
+                case SAWMILL:
+                    res.add(LUMBER_HUT);
+                    break;
+                case MARKET:
                     res.add(SAWMILL);
                     res.add(WINDMILL);
                     res.add(FORGE);
-                }
+                    break;
             }
             return res;
         }
@@ -815,6 +827,7 @@ public class Types {
         DISBAND("img/actions/disband.png", FREE_SPIRIT),
         EXAMINE("img/actions/examine.png", null),
         HEAL_OTHERS("img/actions/heal2.png", null),
+        INFILTRATE("img/actions/capture.png", DIPLOMACY),
         MAKE_VETERAN(null, null),
         MOVE("img/actions/move.png", null),
         RECOVER(null, null),
@@ -868,6 +881,7 @@ public class Types {
                 case DISBAND: return new DisbandCommand();
                 case EXAMINE: return new ExamineCommand();
                 case HEAL_OTHERS: return new HealOthersCommand();
+                case INFILTRATE: return new InfiltrateCommand();
                 case MAKE_VETERAN: return new MakeVeteranCommand();
                 case MOVE: return new MoveCommand();
                 case RECOVER: return new RecoverCommand();

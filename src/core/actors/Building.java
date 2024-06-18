@@ -15,6 +15,9 @@ public class Building {
     //ID this building belongs to
     public int cityId;
 
+    //Level of the building
+    public int level;
+
     /**
      * Creates a new building
      * @param x x position of this building
@@ -26,6 +29,7 @@ public class Building {
         this.position = new Vector2d(x, y);
         this.type = type;
         this.cityId = cityId;
+        this.level = 0;
     }
 
     /**
@@ -37,6 +41,7 @@ public class Building {
         this.position = new Vector2d(obj.getInt("x"), obj.getInt("y"));
         this.type = Types.BUILDING.getTypeByKey(obj.getInt("type"));
         this.cityId = cityID;
+        this.level = 0;
     }
 
     /**
@@ -55,5 +60,9 @@ public class Building {
      */
     int getBonus(){
         return type.getBonus();
+    }
+
+    void levelChange(int multiplier) {
+        level += multiplier;
     }
 }

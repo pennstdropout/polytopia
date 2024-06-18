@@ -74,12 +74,16 @@ public class AttackCommand implements ActionCommand {
             } else {
 
                 target.setCurrentHP(target.getCurrentHP() - attackResult);
-
-                //Retaliation attack
+                Types.UNIT targetType = target.getType();
 
                 //Check if this unit is in target's attacking range (we can use chebichev distance)
                 double distance = Vector2d.chebychevDistance(attacker.getPosition(), target.getPosition());
-                if (distance <= target.RANGE) {
+
+                boolean inRange = distance <= target.RANGE;
+                boolean stiff = targetType == Types.UNIT.CATAPULT || targetType == Types.UNIT.BOMBER;
+                boolean dagger = targetType == Types.UNIT.DAGGER;
+
+                if (inRange && !stiff && !dagger) {
                     //Deal damage based on targets defence stat, regardless of this units defence stat
                     attacker.setCurrentHP(attacker.getCurrentHP() - defenceResult);
                     //Check if attack kills this unit, if it does add a kill to the target

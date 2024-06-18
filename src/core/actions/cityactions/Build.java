@@ -106,20 +106,16 @@ public class Build extends CityAction
 
         //Adjacency constraint
         List<Types.BUILDING> buildingNeeded = buildingType.getAdjacencyConstraint();
-        if(!buildingNeeded.isEmpty())
+        boolean adjFound = false;
+        for(Vector2d adjPos : targetPos.neighborhood(1,0,board.getSize()))
         {
-            boolean adjFound = false;
-            for(Vector2d adjPos : targetPos.neighborhood(1,0,board.getSize()))
+            if(buildingNeeded.contains(board.getBuildingAt(adjPos.x, adjPos.y)))
             {
-                if(buildingNeeded.contains(board.getBuildingAt(adjPos.x, adjPos.y)))
-                {
-                    adjFound = true;
-                    break;
-                }
+                adjFound = true;
+                break;
             }
-
-            if(!adjFound) return false;
         }
+        if(!adjFound) return false;
 
         //Uniqueness constrain
         if(checkIfUnique) {

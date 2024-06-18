@@ -192,12 +192,12 @@ public abstract class Unit extends Actor
             }
         }
     }
-    
+
     public boolean canAttack()
     {
         return this.canTransitionTo(ATTACKED);
     }
-    
+
     public boolean canMove()
     {
         return this.canTransitionTo(MOVED);

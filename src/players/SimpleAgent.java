@@ -123,6 +123,8 @@ public class SimpleAgent extends Agent {
             score = 5; //Capturing provides only benefits
         }else if (a.getActionType() ==  HEAL_OTHERS) {
             score = evalHeal(a, gs);
+        }else if (a.getActionType() == INFILTRATE) {
+            score = 5; //Always invade
         }else if (a.getActionType() ==  CONVERT) {
             score = evalConvert(a, gs);
         }else if (a.getActionType() ==  MAKE_VETERAN) {
@@ -293,6 +295,9 @@ public class SimpleAgent extends Agent {
 
         switch (t) {
             //These allow the agent to gather more resources so these techs will be given a higher priority.
+            case TRADE:
+            case RIDING:
+            case ROADS:
             case ORGANIZATION:
             case CLIMBING:
             case MINING:
@@ -302,7 +307,6 @@ public class SimpleAgent extends Agent {
                 return 5;
             case FARMING: //These allow the agent to gather more resources or be more well armed in future turns but provides less immediate benefit
             case AQUATISM:
-            case RIDING:
             case FORESTRY:
             case ARCHERY:
             case SAILING:
@@ -376,18 +380,20 @@ public class SimpleAgent extends Agent {
         Types.BUILDING b = ((Build) a).getBuildingType();
         int score = 0;
         switch (b) {
+            case MARKET:
+                score = 5;
+                break;
             case FARM:
             case MINE:
             case FORGE:
             case WINDMILL:
                 score = 4; //These increase population in a while costing less to build so these cases are weighted higher
-//                break;
+                break;
             case PORT:
             case SAWMILL:
             case LUMBER_HUT:
-            case MARKET:
                 score = 3; // These increase population less and cost more so are of less priority
-//                break;
+                break;
             case GRAND_BAZAR:
             case EMPERORS_TOMB:
             case GATE_OF_POWER:
@@ -396,7 +402,7 @@ public class SimpleAgent extends Agent {
             case TOWER_OF_WISDOM:
             case ALTAR_OF_PEACE:
                 score= 5; //These are for after a task in finished and don't cost anything and increase population so pick these randomly
-//                break;
+                break;
             case TEMPLE:
             case WATER_TEMPLE:
             case MOUNTAIN_TEMPLE:
@@ -412,7 +418,7 @@ public class SimpleAgent extends Agent {
     //Evaluate an upgrade action on a boat/ship
     // TODO: CLOAKS
     // TODO: SPLASH
-    // TODO: MARKET?
+    // TODO: MARKET
     private int evalUpgrade(Action a, GameState gs, Tribe thisTribe) {
         Unit u = (Unit) gs.getActor(((Upgrade) a).getUnitId());
 
