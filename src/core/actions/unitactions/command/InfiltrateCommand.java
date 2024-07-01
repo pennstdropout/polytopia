@@ -26,7 +26,7 @@ public class InfiltrateCommand implements ActionCommand {
             Board b = gs.getBoard();
 
             City targetCity = (City) gs.getActor(action.targetId);
-            Tribe targetTribe = (Tribe) gs.getActor(targetCity.getTribeId());
+            Tribe targetTribe = gs.getTribe(targetCity.getTribeId());
             int targetProd = targetCity.getProduction();
             targetTribe.subtractStars(targetProd);
 

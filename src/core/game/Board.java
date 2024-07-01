@@ -263,7 +263,7 @@ public class Board {
                             return null;
                         }
                         break;
-                    case STARS:
+                    case STAR:
                         if (!t.isResearched(Types.TECHNOLOGY.SAILING)) {
                             return null;
                         }
@@ -340,9 +340,9 @@ public class Board {
             } else return false; //Can't be pushed if it's a mountain and climbing is not researched.
         }
 
-
         //Water with a port this tribe owns?
         Types.BUILDING b = buildings[x][y];
+
         if (terrain == SHALLOW_WATER || terrain == DEEP_WATER) {
 
             if(toPush.getType().isWaterUnit())

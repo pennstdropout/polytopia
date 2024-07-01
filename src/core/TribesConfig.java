@@ -83,7 +83,7 @@ public class TribesConfig
     public static final int CLOAK_MOVEMENT = 2;
     public static final int CLOAK_MAX_HP = 5;
     public static final int CLOAK_RANGE = 1;
-    public static final int CLOAK_COST = 8;
+    public static final int CLOAK_COST = 0; //TODO: revert testing config
     static final int CLOAK_POINTS = 15;
 
     // Dagger
@@ -205,11 +205,11 @@ public class TribesConfig
     // Resources
     static final int ANIMAL_COST = 2;
     static final int FISH_COST = 2;
-    static final int WHALES_COST = 0;
+    static final int STAR_COST = 0;
     static final int FRUIT_COST = 2;
     static final int ANIMAL_POP = 1;
     static final int FISH_POP = 1;
-    static final int WHALES_STARS = 8;
+    static final int STAR_STARS = 8;
     static final int FRUIT_POP = 1;
 
     // ROAD

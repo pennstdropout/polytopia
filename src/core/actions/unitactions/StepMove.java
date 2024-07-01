@@ -147,7 +147,7 @@ public class StepMove implements NeighbourHelper
                     neighbours.add(new PathNode(tile, stepCost));
 
             //No zone of control, allow movement if part of MOV is still available.
-            }else if(Math.floor(costFrom + stepCost) <= unit.MOV){
+            } else if(Math.floor(costFrom + stepCost) <= unit.MOV){
                 neighbours.add(new PathNode(tile, stepCost));
             }
 

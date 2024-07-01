@@ -5,6 +5,7 @@ import core.Types;
 import core.actions.tribeactions.EndTurn;
 import core.actions.tribeactions.TribeAction;
 import core.actions.unitactions.*;
+import core.actors.City;
 import core.actors.units.Unit;
 import core.game.Game;
 import core.game.GameState;
@@ -410,7 +411,8 @@ public class GUI extends JFrame {
             // Draw animations for these actions
             if (a.getActionType() == ATTACK ||
                     a.getActionType() == CONVERT ||
-                    a.getActionType() == HEAL_OTHERS) {
+                    a.getActionType() == HEAL_OTHERS ||
+                    a.getActionType() == INFILTRATE) {
                 boardView.paintAction((UnitAction)a);
             }
         }
@@ -515,6 +517,9 @@ public class GUI extends JFrame {
             pos = new Vector2d(u.getPosition().x-1, u.getPosition().y);
         } else if (a.getActionType() == CONVERT) {
             Unit target = (Unit) gs.getActor(((Convert) a).getTargetId());
+            pos = target.getPosition();
+        } else if (a.getActionType() == INFILTRATE) {
+            City target = (City) gs.getActor(((Infiltrate) a).getTargetId());
             pos = target.getPosition();
         }
         return pos;

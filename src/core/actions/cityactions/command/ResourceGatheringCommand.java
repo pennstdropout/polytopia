@@ -29,7 +29,7 @@ public class ResourceGatheringCommand implements ActionCommand {
                 case FRUIT:
                     city.addPopulation(tribe, resource.getBonus());
                     return true;
-                case STARS: //Whaling is the only resource which provides extra stars
+                case STAR: //Whaling is the only resource which provides extra stars
                     Board b = gs.getBoard();
                     Tribe t  = b.getTribe(city.getTribeId());
                     t.addStars(resource.getBonus());

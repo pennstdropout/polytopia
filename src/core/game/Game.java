@@ -365,28 +365,30 @@ public class Game {
                         action = ag.act(gameStateObservations[playerID], ect);
                         remainingECT = ect.remainingTimeMillis(); // Note down the remaining time to use it for the next iteration
 
-                        if (LOG_STATS && !isHumanPlayer)
-                            updateBranchingFactor(aiStats[playerID], gs.getTick(), gameStateObservations[playerID], ag);
+                        if (action != null) {
 
-                        if(LOG_STATS)
-                            updateGameplayStatsMove(gpStats[playerID], action, gameStateObservations[playerID]);
+                            if (LOG_STATS && !isHumanPlayer)
+                                updateBranchingFactor(aiStats[playerID], gs.getTick(), gameStateObservations[playerID], ag);
 
-                        curActionCounter++;
+                            if (LOG_STATS)
+                                updateGameplayStatsMove(gpStats[playerID], action, gameStateObservations[playerID]);
 
-                        if (actionDelayTimer != null) {  // Reset action delay timer for next action request
-                            actionDelayTimer = new ElapsedCpuTimer();
-                            actionDelayTimer.setMaxTimeMillis(FRAME_DELAY);
+                            curActionCounter++;
+
+                            if (actionDelayTimer != null) {  // Reset action delay timer for next action request
+                                actionDelayTimer = new ElapsedCpuTimer();
+                                actionDelayTimer.setMaxTimeMillis(FRAME_DELAY);
+                            }
+
+                            // Continue this turn if there are still available actions and end turn was not requested.
+                            // If the agent is human, let him play for now.
+                            continueTurn = !gs.isTurnEnding();
+                            if (!isHumanPlayer) {
+                                ect.setMaxTimeMillis(remainingECT);
+                                boolean timeOut = TURN_TIME_LIMITED && ect.exceededMaxTime();
+                                continueTurn &= gs.existAvailableActions(tribe) && !timeOut;
+                            }
                         }
-
-                        // Continue this turn if there are still available actions and end turn was not requested.
-                        // If the agent is human, let him play for now.
-                        continueTurn = !gs.isTurnEnding();
-                        if (!isHumanPlayer) {
-                            ect.setMaxTimeMillis(remainingECT);
-                            boolean timeOut = TURN_TIME_LIMITED && ect.exceededMaxTime();
-                            continueTurn &= gs.existAvailableActions(tribe) && !timeOut;
-                        }
-
                     }
                 } else if (endTurnDelay == null) {
                     // If turn should be ending (and we've not already triggered end turn), the action is automatically EndTurn

@@ -36,7 +36,7 @@ public class ResourceGathering extends CityAction
                     return t.getTechTree().isResearched(Types.TECHNOLOGY.HUNTING);
                 case FISH:
                     return t.getTechTree().isResearched(Types.TECHNOLOGY.FISHING);
-                case STARS:
+                case STAR:
                     return t.getTechTree().isResearched(Types.TECHNOLOGY.AQUACULTURE);
                 case FRUIT:
                     return t.getTechTree().isResearched(Types.TECHNOLOGY.ORGANIZATION);

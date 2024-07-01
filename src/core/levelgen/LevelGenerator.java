@@ -327,7 +327,7 @@ public class LevelGenerator {
                 }
             } else if(getTerrain(cell) == DEEP_WATER.getMapChar()) {
                 if (proc(villageMap, cell, getBaseProb("WHALES") * getTribeProb("WHALES", tileOwner[cell]))) {
-                    writeTile(cell, null, ""+ STARS.getMapChar());
+                    writeTile(cell, null, ""+ STAR.getMapChar());
                 }
             } else if(getTerrain(cell) == MOUNTAIN.getMapChar()) {
                 if (proc(villageMap, cell, getBaseProb("ORE") * getTribeProb("ORE", tileOwner[cell]))) {

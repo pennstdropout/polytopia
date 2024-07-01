@@ -20,6 +20,12 @@ import static core.Types.TECHNOLOGY.*;
 import static core.Types.TERRAIN.*;
 import static core.Types.UNIT.*;
 
+// TODO: CLOAKS
+// TODO: SPLASH
+// TODO: MARKET
+// TODO: lighthouses and monuments
+// TODO: port movement
+
 public class Types {
 
     public enum TECHNOLOGY {
@@ -47,7 +53,7 @@ public class Types {
         SPIRITUALISM(3, ARCHERY),
         TRADE(3, ROADS),
         PHILOSOPHY(3, MEDITATION),
-        DIPLOMACY(3, STRATEGY);
+        DIPLOMACY(1, null); //TODO: revert testing config
 
         private int tier;
         private TECHNOLOGY parent;
@@ -161,7 +167,7 @@ public class Types {
         FISH(0, "img/resource/fish2.png", null,'h', FISH_COST, FISH_POP, FISHING),
         FRUIT(1, "img/resource/fruit2.png", null, 'f', FRUIT_COST, FRUIT_POP, ORGANIZATION),
         ANIMAL(2, "img/resource/animal2.png", null, 'a', ANIMAL_COST, ANIMAL_POP, HUNTING),
-        STARS(3, "img/resource/whale2.png", "img/resource/whale3.png", 'w', WHALES_COST, WHALES_STARS, AQUACULTURE),
+        STAR(3, "img/resource/whale2.png", "img/resource/whale3.png", 'w', STAR_COST, STAR_STARS, NAVIGATION),
         ORE(5, "img/resource/ore2.png", null, 'o', 0, 0, MINING),
         CROPS(6, "img/resource/crops2.png", null, 'c', 0, 0, FARMING),
         RUINS(7, "img/resource/ruins2.png", null, 'r', 0, 0, null);
@@ -184,7 +190,7 @@ public class Types {
         }
         public int getKey() {  return key; }
         public Image getImage(TERRAIN t) {
-            if (this == STARS && t != null) {
+            if (this == STAR && t != null) {
                 if (t == DEEP_WATER) {
                     return ImageIO.GetInstance().getImage(imageFile);
                 } else {
@@ -224,7 +230,7 @@ public class Types {
      */
     public enum BUILDING
     {
-        PORT (0,"img/building/dock2.png", PORT_COST, PORT_BONUS, SAILING, new HashSet<>(Collections.singletonList(SHALLOW_WATER))),
+        PORT (0,"img/building/dock2.png", PORT_COST, PORT_BONUS, FISHING, new HashSet<>(Collections.singletonList(SHALLOW_WATER))),
         MINE (1,"img/building/mine2.png", MINE_COST, MINE_BONUS, MINING, new HashSet<>(Collections.singletonList(MOUNTAIN))),
         FORGE (2,"img/building/forge2.png", FORGE_COST, FORGE_BONUS, SMITHERY, new HashSet<>(Collections.singletonList(PLAIN))),
         FARM (3, "img/building/farm2.png", FARM_COST, FARM_BONUS, FARMING, new HashSet<>(Collections.singletonList(PLAIN))),
@@ -827,7 +833,7 @@ public class Types {
         DISBAND("img/actions/disband.png", FREE_SPIRIT),
         EXAMINE("img/actions/examine.png", null),
         HEAL_OTHERS("img/actions/heal2.png", null),
-        INFILTRATE("img/actions/capture.png", DIPLOMACY),
+        INFILTRATE("img/actions/convert.png", null),
         MAKE_VETERAN(null, null),
         MOVE("img/actions/move.png", null),
         RECOVER(null, null),

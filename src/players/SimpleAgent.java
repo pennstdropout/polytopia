@@ -124,7 +124,7 @@ public class SimpleAgent extends Agent {
         }else if (a.getActionType() ==  HEAL_OTHERS) {
             score = evalHeal(a, gs);
         }else if (a.getActionType() == INFILTRATE) {
-            score = 5; //Always invade
+            score = 5; //Always infiltrate
         }else if (a.getActionType() ==  CONVERT) {
             score = evalConvert(a, gs);
         }else if (a.getActionType() ==  MAKE_VETERAN) {
@@ -416,9 +416,6 @@ public class SimpleAgent extends Agent {
     }
 
     //Evaluate an upgrade action on a boat/ship
-    // TODO: CLOAKS
-    // TODO: SPLASH
-    // TODO: MARKET
     private int evalUpgrade(Action a, GameState gs, Tribe thisTribe) {
         Unit u = (Unit) gs.getActor(((Upgrade) a).getUnitId());
 

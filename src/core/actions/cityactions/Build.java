@@ -109,7 +109,7 @@ public class Build extends CityAction
         boolean adjFound = false;
         for(Vector2d adjPos : targetPos.neighborhood(1,0,board.getSize()))
         {
-            if(buildingNeeded.contains(board.getBuildingAt(adjPos.x, adjPos.y)))
+            if(buildingNeeded.isEmpty() || buildingNeeded.contains(board.getBuildingAt(adjPos.x, adjPos.y)))
             {
                 adjFound = true;
                 break;

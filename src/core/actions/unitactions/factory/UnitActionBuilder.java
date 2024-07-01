@@ -36,6 +36,9 @@ public class UnitActionBuilder
         //Convert
         allActions.addAll(new ConvertFactory().computeActionVariants(unit, gs));
 
+        //Infiltrate
+        allActions.addAll(new InfiltrateFactory().computeActionVariants(unit, gs));
+
         //Disband
         allActions.addAll(new DisbandFactory().computeActionVariants(unit, gs));
 

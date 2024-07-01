@@ -28,7 +28,10 @@ public class Attack extends UnitAction
         Unit attacker = (Unit) gs.getActor(this.unitId);
 
         // Check if target is not null and that it can attack
-        if(target == null || !attacker.canAttack() || attacker.getType() == Types.UNIT.MIND_BENDER)
+        if(target == null || !attacker.canAttack()
+                || attacker.getType() == Types.UNIT.MIND_BENDER
+                || attacker.getType() == Types.UNIT.RAFT
+                || attacker.getType() == Types.UNIT.CLOAK)
             return false;
 
         return unitInRange(attacker, target, gs.getBoard());

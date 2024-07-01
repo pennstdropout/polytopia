@@ -29,7 +29,7 @@ public class MoveCommand implements ActionCommand {
                 if(destinationTerrain != Types.TERRAIN.SHALLOW_WATER && destinationTerrain != Types.TERRAIN.DEEP_WATER){ // && destinationTerrain != Types.TERRAIN.CITY){
                     board.disembark(unit, tribe, destination.x, destination.y);
                 }
-            }else {
+            } else {
                 if(board.getBuildingAt(destination.x, destination.y) == Types.BUILDING.PORT){
                     board.embark(unit, tribe, destination.x, destination.y);
                 }

@@ -252,21 +252,6 @@ public class City extends Actor{
                     }
                 }
             }
-            if (building.type == Types.BUILDING.MARKET) {
-                System.out.println("--------------------------BUILT MARKET------------------------------");
-                System.out.println(building.position);
-                System.out.println();
-                System.out.println(cityToAddTo.production);
-                System.out.println();
-                for (Types.BUILDING bt : btest) {
-                    System.out.println(bt);
-                }
-                try {
-                    Thread.sleep(1000000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
         }
     }
 

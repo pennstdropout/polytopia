@@ -33,13 +33,6 @@ public class ActionController extends Agent {
     }
 
     public Action getAction() {
-        while (actionsQueue.isEmpty()) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
         return actionsQueue.poll();
     }
 

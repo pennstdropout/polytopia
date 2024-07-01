@@ -8,6 +8,8 @@ import core.game.Board;
 import core.game.GameState;
 import utils.Vector2d;
 
+import java.util.Vector;
+
 public class Infiltrate extends UnitAction
 {
     public int targetId;
@@ -20,30 +22,24 @@ public class Infiltrate extends UnitAction
 
     @Override
     public boolean isFeasible(final GameState gs) {
-        Board board = gs.getBoard();
         Unit unit = (Unit) gs.getActor(this.unitId);
+        City target = (City) gs.getActor(this.targetId);
 
         //This needs to be a cloak that can "attack"
-        if(unit.getType() != Types.UNIT.CLOAK || !unit.canAttack())
-            return false;
-
-        //Feasible if this unit can attack this turn and if there is at least one unfriendly city adjacent.
-        for(Vector2d tile : unit.getPosition().neighborhood(unit.RANGE, 0, board.getSize())){
-            City c = board.getCityInBorders(tile.x, tile.y);
-            if (tile == c.getPosition() && c.getTribeId() != gs.getActiveTribeID())
-                targetId = c.getActorId();
-                return true;
-        }
-
-        return false;
+        return target != null && unit.getType() == Types.UNIT.CLOAK && unit.canAttack();
     }
+
+    public void setTargetId(int targetId) {this.targetId = targetId;}
+    public int getTargetId() {return targetId;}
 
     @Override
     public Action copy() {
-        return new Infiltrate(this.unitId);
+        Infiltrate infiltrate = new Infiltrate(this.unitId);
+        infiltrate.setTargetId(this.targetId);
+        return infiltrate;
     }
 
     public String toString() {
-        return "INVADE CITY by unit " + this.unitId;
+        return "INFILTRATE city " + this.targetId +  " by unit " + this.unitId;
     }
 }
