@@ -9,9 +9,12 @@ import core.actions.unitactions.Attack;
 import core.actors.City;
 import core.actors.Tribe;
 import core.actors.units.Unit;
+import core.game.Board;
 import core.game.GameState;
 import utils.Pair;
 import utils.Vector2d;
+
+import java.util.LinkedList;
 
 import static core.TribesConfig.ATTACK_REPERCUSSION;
 import static core.Types.TECHNOLOGY.*;
@@ -69,7 +72,17 @@ public class AttackCommand implements ActionCommand {
                     case WARRIOR:
                     case KNIGHT:
                     case SUPERUNIT:
+                    case DAGGER:
+                    case PIRATE:
                         gs.getBoard().tryPush(attackerTribe, attacker, attacker.getPosition().x, attacker.getPosition().y, target.getPosition().x, target.getPosition().y, gs.getRandomGenerator());
+                        break;
+                    case RAMMER:
+                        Types.TERRAIN destinationTerrain = gs.getBoard().getTerrainAt(target.getPosition().x, target.getPosition().y);
+                        if(destinationTerrain != Types.TERRAIN.SHALLOW_WATER && destinationTerrain != Types.TERRAIN.DEEP_WATER) {
+                            gs.getBoard().disembark(attacker, attackerTribe, target.getPosition().x, target.getPosition().y);
+                        } else {
+                            gs.getBoard().tryPush(attackerTribe, attacker, attacker.getPosition().x, attacker.getPosition().y, target.getPosition().x, target.getPosition().y, gs.getRandomGenerator());
+                        }
                 }
             } else {
 
@@ -80,10 +93,10 @@ public class AttackCommand implements ActionCommand {
                 double distance = Vector2d.chebychevDistance(attacker.getPosition(), target.getPosition());
 
                 boolean inRange = distance <= target.RANGE;
-                boolean stiff = targetType == Types.UNIT.CATAPULT || targetType == Types.UNIT.BOMBER;
-                boolean dagger = targetType == Types.UNIT.DAGGER;
+                boolean stiff = targetType == Types.UNIT.CATAPULT || targetType == Types.UNIT.RAFT  || targetType == Types.UNIT.BOMBER;
+                boolean surprise = attacker.getType() == Types.UNIT.DAGGER || attacker.getType() == Types.UNIT.PIRATE;
 
-                if (inRange && !stiff && !dagger) {
+                if (inRange && !stiff && !surprise) {
                     //Deal damage based on targets defence stat, regardless of this units defence stat
                     attacker.setCurrentHP(attacker.getCurrentHP() - defenceResult);
                     //Check if attack kills this unit, if it does add a kill to the target
@@ -95,7 +108,25 @@ public class AttackCommand implements ActionCommand {
                         gs.killUnit(attacker);
                     }
                 }
+            }
 
+            if (attacker.getType() == Types.UNIT.BOMBER) { // check for splash damage
+                LinkedList<Vector2d> tiles = target.getPosition().neighborhood(1, 0, gs.getBoard().getSize());
+
+                for (Vector2d tile: tiles) {
+                    Unit splashTarget = gs.getBoard().getUnitAt(tile.x, tile.y);
+                    int splashResult;
+                    if (splashTarget != null) {
+                        splashResult = Math.floorDiv(getAttackResults(attacker, splashTarget, gs).getFirst(), 2);
+                        if (splashTarget.getCurrentHP() <= splashResult) {
+                            attacker.addKill();
+                            attackerTribe.addKill();
+                            gs.killUnit(splashTarget);
+                        } else {
+                            splashTarget.setCurrentHP(splashTarget.getCurrentHP() - splashResult);
+                        }
+                    }
+                }
             }
             return true;
         }
@@ -108,9 +139,7 @@ public class AttackCommand implements ActionCommand {
      * @param gs - current game state
      * @return Pair, where first element is the attack power (attackResult) and second is defence power (defenceResult)
      */
-    private Pair<Integer, Integer> getAttackResults(Attack action, GameState gs) {
-        Unit attacker = (Unit) gs.getActor(action.getUnitId());
-        Unit target = (Unit) gs.getActor(action.getTargetId());
+    public Pair<Integer, Integer> getAttackResults(Unit attacker, Unit target, GameState gs) {
         Vector2d targetPos = target.getPosition();
         Tribe targetTribe = gs.getTribe(target.getTribeId());
 
@@ -148,6 +177,12 @@ public class AttackCommand implements ActionCommand {
         int defenceResult = (int) Math.round((defenceForce / totalDamage) * target.DEF * accelerator);
 
         return new Pair<>(attackResult, defenceResult);
+    }
+
+    public Pair<Integer, Integer> getAttackResults(Attack action, GameState gs) {
+        Unit attacker = (Unit) gs.getActor(action.getUnitId());
+        Unit target = (Unit) gs.getActor(action.getTargetId());
+        return getAttackResults(attacker, target, gs);
     }
 
     public boolean isRetaliation(Attack action, GameState gs) {

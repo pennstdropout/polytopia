@@ -5,9 +5,7 @@ import core.Types;
 import core.actions.cityactions.*;
 import core.actions.tribeactions.BuildRoad;
 import core.actions.tribeactions.ResearchTech;
-import core.actions.unitactions.Disband;
-import core.actions.unitactions.HealOthers;
-import core.actions.unitactions.Upgrade;
+import core.actions.unitactions.*;
 import core.actors.City;
 import core.actors.Tribe;
 import core.actors.units.Bomber;
@@ -44,12 +42,12 @@ public class InfoView extends JComponent {
     private JButton[] actionB, actionS;
     private JButton actionRoad;
     private JButton actionResearch;
-    private JButton actionHealOthers, actionDisband, actionUpgrade;
+    private JButton actionHealOthers, actionDisband, actionUpgradeToScout, actionUpgradeToRammer, actionUpgradeToBomber;
     private TribesActionListener listenerBF, listenerCF, listenerD, listenerGF, listenerRG;
     private TribesActionListener listenerS, listenerB;
     private TribesActionListener listenerResearch;
     private TribesActionListener listenerRoad;
-    private TribesActionListener listenerHealOthers, listenerDisband, listenerUpgrade;
+    private TribesActionListener listenerHealOthers, listenerDisband, listenerUpgradeToScout, listenerUpgradeToRammer, listenerUpgradeToBomber;
     private ActionController ac;
 
     private int highlightX, highlightY;
@@ -155,11 +153,21 @@ public class InfoView extends JComponent {
         listenerDisband = new TribesActionListener("Disband");
         actionDisband.addActionListener(listenerDisband);
         actionPanel.add(actionDisband);
-        actionUpgrade = new JButton("Upgrade");
-        actionUpgrade.setVisible(false);
-        listenerUpgrade = new TribesActionListener("Upgrade");
-        actionUpgrade.addActionListener(listenerUpgrade);
-        actionPanel.add(actionUpgrade);
+        actionUpgradeToScout = new JButton("Upgrade To Scout");
+        actionUpgradeToScout.setVisible(false);
+        listenerUpgradeToScout = new TribesActionListener("Upgrade To Scout");
+        actionUpgradeToScout.addActionListener(listenerUpgradeToScout);
+        actionPanel.add(actionUpgradeToScout);
+        actionUpgradeToRammer = new JButton("Upgrade To Rammer");
+        actionUpgradeToRammer.setVisible(false);
+        listenerUpgradeToRammer = new TribesActionListener("Upgrade To Rammer");
+        actionUpgradeToRammer.addActionListener(listenerUpgradeToRammer);
+        actionPanel.add(actionUpgradeToRammer);
+        actionUpgradeToBomber = new JButton("Upgrade To Bomber");
+        actionUpgradeToBomber.setVisible(false);
+        listenerUpgradeToBomber = new TribesActionListener("Upgrade To Bomber");
+        actionUpgradeToBomber.addActionListener(listenerUpgradeToBomber);
+        actionPanel.add(actionUpgradeToBomber);
 
         this.setLayout(new FlowLayout());
         JScrollPane scrollPane1 = new JScrollPane(textArea);
@@ -386,7 +394,9 @@ public class InfoView extends JComponent {
             if (unitActions != null && unitActions.size() > 0) {
                 boolean foundHO = false;
                 boolean foundD = false;
-                boolean foundU = false;
+                boolean foundUS = false;
+                boolean foundUR = false;
+                boolean foundUB = false;
                 for (Action a : unitActions) {
                     if (a.getActionType() == HEAL_OTHERS) {
                         foundHO = true;
@@ -394,16 +404,22 @@ public class InfoView extends JComponent {
                     } else if (a.getActionType() == DISBAND) {
                         foundD = true;
                         listenerDisband.update(u.getActorId(), ac, gs);
-                    } else if (a.getActionType() == UPGRADE_TO_RAMMER ||
-                            a.getActionType() == UPGRADE_TO_SCOUT ||
-                            a.getActionType() == UPGRADE_TO_BOMBER) {
-                        foundU = true;
-                        listenerUpgrade.update(u.getActorId(), ac, gs);
+                    } else if (a.getActionType() == UPGRADE_TO_SCOUT) {
+                        foundUS = true;
+                        listenerUpgradeToScout.update(u.getActorId(), ac, gs);
+                    } else if (a.getActionType() == UPGRADE_TO_RAMMER) {
+                        foundUR = true;
+                        listenerUpgradeToRammer.update(u.getActorId(), ac, gs);
+                    } else if (a.getActionType() == UPGRADE_TO_BOMBER) {
+                        foundUB = true;
+                        listenerUpgradeToBomber.update(u.getActorId(), ac, gs);
                     }
                 }
                 actionHealOthers.setVisible(foundHO);
                 actionDisband.setVisible(foundD);
-                actionUpgrade.setVisible(foundU);
+                actionUpgradeToScout.setVisible(foundUS);
+                actionUpgradeToRammer.setVisible(foundUR);
+                actionUpgradeToBomber.setVisible(foundUB);
             }
         }
     }
@@ -463,7 +479,9 @@ public class InfoView extends JComponent {
         actionRG.setVisible(false);
         actionRoad.setVisible(false);
         actionResearch.setVisible(false);
-        actionUpgrade.setVisible(false);
+        actionUpgradeToScout.setVisible(false);
+        actionUpgradeToRammer.setVisible(false);
+        actionUpgradeToBomber.setVisible(false);
         actionHealOthers.setVisible(false);
         actionDisband.setVisible(false);
         for (JButton jb: actionB) {
@@ -636,12 +654,19 @@ public class InfoView extends JComponent {
                         a = new Disband(unitID);
                     }
                     break;
-                case "Upgrade":
+                case "Upgrade To Scout":
                     if (e.getSource() instanceof JButton) {
-                        Unit u = (Unit) gs.getActor(unitID);
-                        Types.ACTION actionType = null;
-                        if(u.getType() == Types.UNIT.RAFT) actionType = UPGRADE_TO_SCOUT;
-                        a = new Upgrade(actionType, unitID);
+                        a = new UpgradeToScout(unitID);
+                    }
+                    break;
+                case "Upgrade To Rammer":
+                    if (e.getSource() instanceof JButton) {
+                        a = new UpgradeToRammer(unitID);
+                    }
+                    break;
+                case "Upgrade To Bomber":
+                    if (e.getSource() instanceof JButton) {
+                        a = new UpgradeToBomber(unitID);
                     }
                     break;
             }

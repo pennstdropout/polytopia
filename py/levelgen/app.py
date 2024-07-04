@@ -12,7 +12,7 @@ tribes_list = ['Xin-xi', 'Imperius', 'Bardur', 'Oumaji', 'Kickoo', 'Hoodrick', '
 
 terrain = ['forest', 'fruit', 'game', 'ground', 'mountain']
 
-general_terrain = ['crop', 'fish', 'metal', 'ocean', 'ruin', 'village', 'water', 'whale']
+general_terrain = ['crop', 'fish', 'metal', 'ocean', 'ruin', 'village', 'water', 'star']
 
 _____ = 2
 ____ = 1.5
@@ -46,12 +46,12 @@ terrain_probs = {'water': {'Xin-xi': 0, 'Imperius': 0, 'Bardur': 0, 'Oumaji': 0,
                  'fish': {'Xin-xi': ___, 'Imperius': ___, 'Bardur': ___, 'Oumaji': ___, 'Kickoo': ____,
                           'Hoodrick': ___, 'Luxidoor': ___, 'Vengir': _, 'Zebasi': ___, 'Ai-mo': ___,
                           'Quetzali': ___, 'Yadakk': ___, 'Aquarion': ___, 'Elyrion': ___},
-                 'whale': {'Xin-xi': ___, 'Imperius': ___, 'Bardur': ___, 'Oumaji': ___, 'Kickoo': ___,
+                 'star': {'Xin-xi': ___, 'Imperius': ___, 'Bardur': ___, 'Oumaji': ___, 'Kickoo': ___,
                            'Hoodrick': ___, 'Luxidoor': ___, 'Vengir': ___, 'Zebasi': ___, 'Ai-mo': ___,
                            'Quetzali': ___, 'Yadakk': ___, 'Aquarion': ___, 'Elyrion': ___}}
 
 general_probs = {'mountain': 0.15, 'forest': 0.4, 'fruit': 0.5, 'crop': 0.5,
-                 'fish': 0.5, 'game': 0.5, 'whale': 0.4, 'metal': 0.5}
+                 'fish': 0.5, 'game': 0.5, 'star': 0.4, 'metal': 0.5}
 
 world_map = [{'type': 'ocean', 'above': None, 'road': False, 'tribe': 'Xin-xi'} for i in range(map_size ** 2)]
 
@@ -210,8 +210,8 @@ for cell in range(map_size**2):
         if proc(cell, general_probs['fish'] * terrain_probs['fish'][world_map[cell]['tribe']]):
             world_map[cell]['above'] = 'fish'
     elif world_map[cell]['type'] == 'ocean':
-        if proc(cell, general_probs['whale'] * terrain_probs['whale'][world_map[cell]['tribe']]):
-            world_map[cell]['above'] = 'whale'
+        if proc(cell, general_probs['star'] * terrain_probs['star'][world_map[cell]['tribe']]):
+            world_map[cell]['above'] = 'star'
     elif world_map[cell]['type'] == 'mountain':
         if proc(cell, general_probs['metal'] * terrain_probs['metal'][world_map[cell]['tribe']]):
             world_map[cell]['above'] = 'metal'
@@ -357,7 +357,7 @@ for c in range(map_size ** 2):
     elif world_map[c]['above'] == 'game':
         print('a,', end='')
         continue
-    elif world_map[c]['above'] == 'whale':
+    elif world_map[c]['above'] == 'star':
         print('w,', end='')
         continue
     elif world_map[c]['above'] == 'metal':

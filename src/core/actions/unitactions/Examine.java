@@ -17,7 +17,6 @@ public class Examine extends UnitAction
         super.unitId = unitId;
     }
 
-
     @Override
     public boolean isFeasible(final GameState gs) {
         Unit unit = (Unit) gs.getActor(this.unitId);
@@ -25,8 +24,8 @@ public class Examine extends UnitAction
         Tribe t = gs.getTribe(unit.getTribeId());
         if(t.getCitiesID().size() == 0)
             return false;
-
-        return unit.isFresh() && gs.getBoard().getResourceAt(unitPos.x, unitPos.y) == Types.RESOURCE.RUINS;
+        Types.RESOURCE r = gs.getBoard().getResourceAt(unitPos.x, unitPos.y);
+        return unit.isFresh() && r == Types.RESOURCE.RUINS;
     }
 
     public Types.EXAMINE_BONUS getBonus() {

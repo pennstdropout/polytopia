@@ -46,6 +46,12 @@ public class Tribe extends Actor {
     //Indicates if the position in the board is visible
     private boolean[][] obsGrid;
 
+    //Tracks population bonus for observing lighthouses (corners)
+    private boolean cornerTR;
+    private boolean cornerTL;
+    private boolean cornerBR;
+    private boolean cornerBL;
+
     //List of city ids connected to the capital (capital not included)
     private ArrayList<Integer> connectedCities = new ArrayList<>();
 
@@ -204,7 +210,16 @@ public class Tribe extends Actor {
         return tribeCopy;
     }
 
-    public boolean clearView(int x, int y, int range, Random r, Board b) {
+    private boolean isLighthouse(int x, int y, Board b) {
+        int max = b.getSize() - 1;
+        boolean topRight = x == max && y == max;
+        boolean topLeft = x == 0 && y == max;
+        boolean bottomRight = x == max && y == 0;
+        boolean bottomLeft = x == 0 && y == 0;
+        return topRight || topLeft || bottomRight || bottomLeft;
+    }
+
+    public boolean clearView(int x, int y, int range, Random r, Board b, boolean init) {
         int size = obsGrid.length;
         Vector2d center = new Vector2d(x, y);
         boolean requiresNetworkUpdate = false;
@@ -216,6 +231,10 @@ public class Tribe extends Actor {
         {
             if (!obsGrid[tile.x][tile.y]) {
                 //Points and visibility.
+                if (isLighthouse(tile.x, tile.y, b) && init) {
+                    continue;
+                }
+
                 obsGrid[tile.x][tile.y] = true;
                 this.score += TribesConfig.CLEAR_VIEW_POINTS;
 
@@ -250,14 +269,37 @@ public class Tribe extends Actor {
         // The boost is only available when playing with partial observability.
         if(!Constants.PLAY_WITH_FULL_OBS && monuments.get(EYE_OF_GOD) == MONUMENT_STATUS.UNAVAILABLE)
         {
-            for (boolean[] booleans : obsGrid)
-                for (int j = 0; j < obsGrid[0].length; ++j) {
-                    if (!booleans[j]) //end and out
-                        return requiresNetworkUpdate;
-                }
+            int maxWidth = obsGrid.length - 1;
+            int maxHeight = obsGrid[0].length - 1;
+            boolean newCornerTR = obsGrid[maxWidth][maxHeight];
+            boolean newCornerTL = obsGrid[0][maxHeight];
+            boolean newCornerBR = obsGrid[maxWidth][0];
+            boolean newCornerBL = obsGrid[0][0];
 
-            //All clear and we couldn't buy monument before. Now we can.
-            monuments.put(EYE_OF_GOD, MONUMENT_STATUS.AVAILABLE);
+            if (!cornerTR && newCornerTR) {
+                City capital = (City) b.getActor(capitalID);
+                capital.addPopulation(this, 1);
+            }
+            if (!cornerTL && newCornerTL) {
+                City capital = (City) b.getActor(capitalID);
+                capital.addPopulation(this, 1);
+            }
+            if (!cornerBR && newCornerBR) {
+                City capital = (City) b.getActor(capitalID);
+                capital.addPopulation(this, 1);
+            }
+            if (!cornerBL && newCornerBL) {
+                City capital = (City) b.getActor(capitalID);
+                capital.addPopulation(this, 1);
+            }
+            if (newCornerTR && newCornerTL && newCornerBR && newCornerBL) {
+                //All clear and we couldn't buy monument before. Now we can.
+                monuments.put(EYE_OF_GOD, MONUMENT_STATUS.AVAILABLE);
+            }
+            cornerTR = newCornerTR;
+            cornerTL = newCornerTL;
+            cornerBR = newCornerBR;
+            cornerBL = newCornerBL;
         }
 
         return requiresNetworkUpdate;

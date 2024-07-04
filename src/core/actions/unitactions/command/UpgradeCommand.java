@@ -3,7 +3,9 @@ package core.actions.unitactions.command;
 import core.Types;
 import core.actions.Action;
 import core.actions.ActionCommand;
-import core.actions.unitactions.Upgrade;
+import core.actions.unitactions.UpgradeToBomber;
+import core.actions.unitactions.UpgradeToRammer;
+import core.actions.unitactions.UpgradeToScout;
 import core.actors.City;
 import core.actors.Tribe;
 import core.actors.units.Raft;
@@ -26,15 +28,24 @@ public class UpgradeCommand implements ActionCommand {
 
     @Override
     public boolean execute(Action a, GameState gs) {
-        Upgrade action = (Upgrade)a;
-        int unitId = action.getUnitId();
 
-        Unit unit = (Unit) gs.getActor(unitId);
-        Tribe tribe = gs.getTribe(unit.getTribeId());
-        Board board = gs.getBoard();
-        City city = (City) board.getActor(unit.getCityId());
+        if(a.isFeasible(gs)){
+            int unitId;
+            if (target == SCOUT) {
+                UpgradeToScout action = (UpgradeToScout) a;
+                unitId = action.getUnitId();
+            } else if (target == RAMMER) {
+                UpgradeToRammer action = (UpgradeToRammer) a;
+                unitId = action.getUnitId();
+            } else {
+                UpgradeToBomber action = (UpgradeToBomber) a;
+                unitId = action.getUnitId();
+            }
+            Unit unit = (Unit) gs.getActor(unitId);
+            Tribe tribe = gs.getTribe(unit.getTribeId());
+            Board board = gs.getBoard();
+            City city = (City) board.getActor(unit.getCityId());
 
-        if(action.isFeasible(gs)){
             //Create the new unit
             Unit newUnit = Types.UNIT.createUnit(unit.getPosition(), unit.getKills(), unit.isVeteran(), unit.getCityId(), unit.getTribeId(), target);
             newUnit.setCurrentHP(unit.getCurrentHP());

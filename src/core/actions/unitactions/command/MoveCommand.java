@@ -26,7 +26,7 @@ public class MoveCommand implements ActionCommand {
             board.moveUnit(unit, unit.getPosition().x, unit.getPosition().y, destination.x, destination.y, gs.getRandomGenerator());
 
             if(unit.getType().isWaterUnit()){
-                if(destinationTerrain != Types.TERRAIN.SHALLOW_WATER && destinationTerrain != Types.TERRAIN.DEEP_WATER){ // && destinationTerrain != Types.TERRAIN.CITY){
+                if(destinationTerrain != Types.TERRAIN.SHALLOW_WATER && destinationTerrain != Types.TERRAIN.DEEP_WATER){
                     board.disembark(unit, tribe, destination.x, destination.y);
                 }
             } else {

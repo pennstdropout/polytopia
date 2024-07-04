@@ -121,6 +121,8 @@ public abstract class Unit extends Actor
             case SUPERUNIT:
             case CLOAK:
             case DAGGER:
+            case PIRATE:
+            case DINGY:
                 if(transition == MOVED && status == FRESH) { return true; }
                 if(transition == ATTACKED && status == FRESH) { return true; }
                 if(transition == ATTACKED && status == MOVED) { return true; }
@@ -171,6 +173,8 @@ public abstract class Unit extends Actor
                 case SWORDMAN:
                 case CLOAK:
                 case DAGGER:
+                case PIRATE:
+                case DINGY:
                     if(newStatus == MOVED && this.status == FRESH) { this.status = MOVED; }
                     if(newStatus == ATTACKED && this.status == FRESH) { this.status = FINISHED; }
                     if(newStatus == ATTACKED && this.status == MOVED) { this.status = FINISHED; }

@@ -365,7 +365,7 @@ public class Board {
         }
 
         //Otherwise, no problem
-        moveUnit  (toPush, startX, startY, x, y, r);
+        moveUnit(toPush, startX, startY, x, y, r);
         return true;
     }
 
@@ -378,18 +378,33 @@ public class Board {
      */
     public void embark(Unit unit, Tribe tribe, int x, int y) {
 
+        Types.UNIT unitType = unit.getType();
         City city = (City) gameActors.get(unit.getCityId());
         removeUnitFromBoard(unit);
         removeUnitFromCity(unit, city, tribe);
 
         //We're actually creating a new unit
         Vector2d newPos = new Vector2d(x, y);
-        Raft boat = (Raft) Types.UNIT.createUnit(newPos, unit.getKills(), unit.isVeteran(), unit.getCityId(), unit.getTribeId(), Types.UNIT.RAFT);
-        boat.setCurrentHP(unit.getCurrentHP());
-        boat.setMaxHP(unit.getMaxHP());
-        boat.setBaseLandUnit(unit.getType());
-        addUnit(city, boat);
 
+        if (unitType == Types.UNIT.CLOAK) {
+            Dingy boat = (Dingy) Types.UNIT.createUnit(newPos, unit.getKills(), unit.isVeteran(), unit.getCityId(), unit.getTribeId(), Types.UNIT.DINGY);
+            boat.setCurrentHP(unit.getCurrentHP());
+            boat.setMaxHP(unit.getMaxHP());
+            boat.setBaseLandUnit(Types.UNIT.CLOAK);
+            addUnit(city, boat);
+        } else if (unitType == Types.UNIT.DAGGER) {
+            Pirate boat = (Pirate) Types.UNIT.createUnit(newPos, unit.getKills(), unit.isVeteran(), unit.getCityId(), unit.getTribeId(), Types.UNIT.PIRATE);
+            boat.setCurrentHP(unit.getCurrentHP());
+            boat.setMaxHP(unit.getMaxHP());
+            boat.setBaseLandUnit(Types.UNIT.DAGGER);
+            addUnit(city, boat);
+        } else {
+            Raft boat = (Raft) Types.UNIT.createUnit(newPos, unit.getKills(), unit.isVeteran(), unit.getCityId(), unit.getTribeId(), Types.UNIT.RAFT);
+            boat.setCurrentHP(unit.getCurrentHP());
+            boat.setMaxHP(unit.getMaxHP());
+            boat.setBaseLandUnit(unit.getType());
+            addUnit(city, boat);
+        }
     }
 
     /**
@@ -435,6 +450,12 @@ public class Board {
             case BOMBER:
                 Bomber bomber = (Bomber) unit;
                 return bomber.getBaseLandUnit();
+            case PIRATE:
+                Pirate pirate = (Pirate) unit;
+                return pirate.getBaseLandUnit();
+            case DINGY:
+                Dingy dingy = (Dingy) unit;
+                return dingy.getBaseLandUnit();
             default:
                 throw new IllegalStateException("Unexpected value: " + unit.getType());
         }
@@ -456,10 +477,13 @@ public class Board {
         Tribe t = tribes[unit.getTribeId()];
 
         int partialObsRangeClear = 1;
-        if (getTerrainAt(xF, yF) == Types.TERRAIN.MOUNTAIN || unit.getType() == Types.UNIT.BOMBER) {
+        if (getTerrainAt(xF, yF) == Types.TERRAIN.MOUNTAIN
+                || unit.getType() == Types.UNIT.SCOUT
+                || unit.getType() == Types.UNIT.CLOAK
+                || unit.getType() == Types.UNIT.DINGY) {
             partialObsRangeClear += 1;
         }
-        boolean networkUpdate = t.clearView(xF, yF, partialObsRangeClear, r, this);
+        boolean networkUpdate = t.clearView(xF, yF, partialObsRangeClear, r, this, false);
         if(networkUpdate)
             tradeNetwork.computeTradeNetworkTribe(this, t);
     }
@@ -487,7 +511,7 @@ public class Board {
                     moved = true;
                     currentPos.x = next.x;
                     currentPos.y = next.y;
-                    boolean updateNetwork = tribes[tribeId].clearView(currentPos.x, currentPos.y, TribesConfig.EXPLORER_CLEAR_RANGE, rnd, this);
+                    boolean updateNetwork = tribes[tribeId].clearView(currentPos.x, currentPos.y, TribesConfig.EXPLORER_CLEAR_RANGE, rnd, this, false);
                     if(updateNetwork)
                         tradeNetwork.computeTradeNetworkTribe(this, tribes[tribeId]);
                 }
@@ -521,11 +545,11 @@ public class Board {
             return false;
 
         //Shallow water and no sailing
-        if (terrains[x][y] == SHALLOW_WATER && !tt.isResearched(Types.TECHNOLOGY.SAILING))
+        if (terrains[x][y] == SHALLOW_WATER && !tt.isResearched(Types.TECHNOLOGY.FISHING))
             return false;
 
         //Deep water and no navigation
-        return terrains[x][y] != DEEP_WATER || tt.isResearched(Types.TECHNOLOGY.NAVIGATION);
+        return terrains[x][y] != DEEP_WATER || tt.isResearched(Types.TECHNOLOGY.SAILING);
     }
 
 
@@ -825,7 +849,7 @@ public class Board {
         tribes[c.getTribeId()].addCity(c.getActorId());
 
         //cities provide visibility, which needs updating
-        tribes[c.getTribeId()].clearView(c.getPosition().x, c.getPosition().y, TribesConfig.NEW_CITY_CLEAR_RANGE, r, this.copy());
+        tribes[c.getTribeId()].clearView(c.getPosition().x, c.getPosition().y, TribesConfig.NEW_CITY_CLEAR_RANGE, r, this.copy(), false);
 
         //By default, cities are considered to be roads for trade network purposes.
         tradeNetwork.setTradeNetwork(this, c.getPosition().x, c.getPosition().y, true);
@@ -1031,6 +1055,7 @@ public class Board {
     public void setTribes(Tribe[] t){ this.tribes = t; }
     boolean getNetworkTilesAt(int x, int y) { return this.tradeNetwork.getTradeNetworkValue(x,y); }
     public int[][] getUnits(){ return this.units; }
+    public Types.RESOURCE[][] getResources(){ return this.resources; }
     public Types.TERRAIN getTerrainAt(int x, int y){ return terrains[x][y]; }
     int getUnitIDAt(int x, int y){ return units[x][y]; }
     public void setResourceAt(int x, int y, Types.RESOURCE r){ resources[x][y] =  r; }

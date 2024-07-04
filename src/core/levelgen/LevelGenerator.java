@@ -326,7 +326,7 @@ public class LevelGenerator {
                     writeTile(cell, null, ""+FISH.getMapChar());
                 }
             } else if(getTerrain(cell) == DEEP_WATER.getMapChar()) {
-                if (proc(villageMap, cell, getBaseProb("WHALES") * getTribeProb("WHALES", tileOwner[cell]))) {
+                if (proc(villageMap, cell, getBaseProb("STAR") * getTribeProb("STAR", tileOwner[cell]))) {
                     writeTile(cell, null, ""+ STAR.getMapChar());
                 }
             } else if(getTerrain(cell) == MOUNTAIN.getMapChar()) {

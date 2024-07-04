@@ -417,18 +417,7 @@ public class SimpleAgent extends Agent {
 
     //Evaluate an upgrade action on a boat/ship
     private int evalUpgrade(Action a, GameState gs, Tribe thisTribe) {
-        Unit u = (Unit) gs.getActor(((Upgrade) a).getUnitId());
-
-        if (u.getType() == Types.UNIT.BOMBER) {
-            if (thisTribe.getMaxProduction(gs) > 5 && thisTribe.getStars() > 8) { //If the agent has a good amount of stars and good production then its worth an upgrade
-                return 3;
-            }
-        } else if (u.getType() == Types.UNIT.RAMMER || u.getType() == Types.UNIT.SCOUT) {
-            if (thisTribe.getMaxProduction(gs) > 3 && thisTribe.getStars() > 6) {
-                return 3;
-            }
-        }
-        return 0;
+        return 5;
     }
 
     //Evaluate a recover action

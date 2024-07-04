@@ -45,7 +45,7 @@ public class GameplayStats {
     private final String[] stats = new String[]{"Production", "Num cities", "Tiles owned",
             "Num units", "Num units WARRIOR", "Num units RIDER", "Num units DEFENDER", "Num units SWORDMAN", "Num units ARCHER",
             "Num units CATAPULT", "Num units KNIGHT", "Num units MIND_BENDER", "Num units RAFT", "Num units RAMMER", "Num units SCOUT", "Num units BOMBER",
-            "Num units SUPERUNIT", "Num units CLOAK", "Num units DAGGER",
+            "Num units SUPERUNIT", "Num units CLOAK", "Num units DAGGER", "Num units PIRATE", "Num units DINGY",
             "Num techs", "Num techs farm", "Num techs mountain", "Num techs naval", "Num techs range", "Num techs roads",
             "Num monuments", "Num temples", "Num buildings", "Num buildings PORT", "Num buildings MINE", "Num buildings FORGE", "Num buildings FARM", "Num buildings WINDMILL",
             "Num buildings MARKET", "Num buildings LUMBER_HUT", "Num buildings SAWMILL",
@@ -58,7 +58,7 @@ public class GameplayStats {
 
     private final String[] actionSubtypes = new String[]{
             "Spawn WARRIOR", "Spawn RIDER", "Spawn DEFENDER", "Spawn SWORDMAN", "Spawn ARCHER",
-            "Spawn CATAPULT", "Spawn KNIGHT", "Spawn MIND_BENDER", "Spawn CLOAK", "Spawn DAGGER",
+            "Spawn CATAPULT", "Spawn KNIGHT", "Spawn MIND_BENDER", "Spawn CLOAK",
             "Build monuments", "Build temples", "Build PORT", "Build MINE", "Build FORGE", "Build FARM", "Build WINDMILL",
             "Build MARKET", "Build LUMBER_HUT", "Build SAWMILL",
             "Research farm", "Research mountain", "Research naval", "Research range", "Research roads",

@@ -126,7 +126,7 @@ public class GameState {
             int startingCityId = tribe.getCitiesID().get(0);
             City c = (City) board.getActor(startingCityId);
             Vector2d cityPos = c.getPosition();
-            tribe.clearView(cityPos.x, cityPos.y, TribesConfig.FIRST_CITY_CLEAR_RANGE, rnd, board);
+            tribe.clearView(cityPos.x, cityPos.y, TribesConfig.FIRST_CITY_CLEAR_RANGE, rnd, board, true);
         }
 
         canEndTurn = new boolean[tribes.length];
@@ -460,6 +460,7 @@ public class GameState {
         for(int unitId : allTribeUnits)
         {
             Unit unit = (Unit) getActor(unitId);
+
             if(unit.getStatus() == Types.TURN_STATUS.PUSHED)
                 //Pushed units in the previous turn start as if they moved already.
                 unit.setStatus(Types.TURN_STATUS.MOVED);

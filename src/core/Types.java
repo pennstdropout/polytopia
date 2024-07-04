@@ -20,11 +20,10 @@ import static core.Types.TECHNOLOGY.*;
 import static core.Types.TERRAIN.*;
 import static core.Types.UNIT.*;
 
-// TODO: CLOAKS
-// TODO: SPLASH
-// TODO: MARKET
-// TODO: lighthouses and monuments
-// TODO: port movement
+// TODO: proper markets
+// TODO: icons for lighthouses, cloaks/dingy, dagger/pirate
+// TODO: map building
+// TODO: gather stars GUI not displaying
 
 public class Types {
 
@@ -53,7 +52,7 @@ public class Types {
         SPIRITUALISM(3, ARCHERY),
         TRADE(3, ROADS),
         PHILOSOPHY(3, MEDITATION),
-        DIPLOMACY(1, null); //TODO: revert testing config
+        DIPLOMACY(3, STRATEGY);
 
         private int tier;
         private TECHNOLOGY parent;
@@ -167,7 +166,7 @@ public class Types {
         FISH(0, "img/resource/fish2.png", null,'h', FISH_COST, FISH_POP, FISHING),
         FRUIT(1, "img/resource/fruit2.png", null, 'f', FRUIT_COST, FRUIT_POP, ORGANIZATION),
         ANIMAL(2, "img/resource/animal2.png", null, 'a', ANIMAL_COST, ANIMAL_POP, HUNTING),
-        STAR(3, "img/resource/whale2.png", "img/resource/whale3.png", 'w', STAR_COST, STAR_STARS, NAVIGATION),
+        STAR(3, "img/decorations/star.png", null, 'w', STAR_COST, STAR_STARS, NAVIGATION),
         ORE(5, "img/resource/ore2.png", null, 'o', 0, 0, MINING),
         CROPS(6, "img/resource/crops2.png", null, 'c', 0, 0, FARMING),
         RUINS(7, "img/resource/ruins2.png", null, 'r', 0, 0, null);
@@ -244,7 +243,7 @@ public class Types {
         MOUNTAIN_TEMPLE (11,"img/building/temple2.png", TEMPLE_COST, TEMPLE_BONUS, MEDITATION, new HashSet<>(Collections.singletonList(MOUNTAIN))),
         ALTAR_OF_PEACE (12,"img/building/monument2.png", 0, MONUMENT_BONUS, MEDITATION, new HashSet<>(Arrays.asList(SHALLOW_WATER, PLAIN))),
         EMPERORS_TOMB (13,"img/building/monument2.png", 0, MONUMENT_BONUS, TRADE, new HashSet<>(Arrays.asList(SHALLOW_WATER, PLAIN))),
-        EYE_OF_GOD (14,"img/building/monument2.png", 0, MONUMENT_BONUS, NAVIGATION, new HashSet<>(Arrays.asList(SHALLOW_WATER, PLAIN))),
+        EYE_OF_GOD (14,"img/building/monument2.png", 0, MONUMENT_BONUS, null, new HashSet<>(Arrays.asList(SHALLOW_WATER, PLAIN))),
         GATE_OF_POWER (15,"img/building/monument2.png", 0, MONUMENT_BONUS, null, new HashSet<>(Arrays.asList(SHALLOW_WATER, PLAIN))),
         GRAND_BAZAR (16,"img/building/monument2.png", 0, MONUMENT_BONUS, ROADS, new HashSet<>(Arrays.asList(SHALLOW_WATER, PLAIN))),
         PARK_OF_FORTUNE (17,"img/building/monument2.png", 0, MONUMENT_BONUS, null, new HashSet<>(Arrays.asList(SHALLOW_WATER, PLAIN))),
@@ -533,7 +532,9 @@ public class Types {
         SUPERUNIT(11, "img/unit/superunit/", "img/weapons/melee/tile003.png", SUPERUNIT_COST, null, SUPERUNIT_POINTS), //+50
         SCOUT(12,"img/unit/ship/", "img/weapons/bombs/", SCOUT_COST, SAILING, SCOUT_POINTS),//+0
         CLOAK (13,"img/unit/rider/", "img/weapons/melee/tile001.png", CLOAK_COST, DIPLOMACY, CLOAK_POINTS), //+15
-        DAGGER (14,"img/unit/warrior/", "img/weapons/melee/tile001.png", DAGGER_COST, DIPLOMACY, DAGGER_POINTS); //+15
+        DAGGER (14,"img/unit/warrior/", "img/weapons/melee/tile001.png", DAGGER_COST, null, DAGGER_POINTS), //+15
+        PIRATE (15,"img/unit/boat/", "img/weapons/arrows/boat.png", DAGGER_COST, null, DAGGER_POINTS), //+15
+        DINGY (16,"img/unit/boat/", "img/weapons/arrows/boat.png", CLOAK_COST, DIPLOMACY, CLOAK_POINTS); //+15
 
         private int key;
         private String imageFile, weapon;
@@ -556,6 +557,7 @@ public class Types {
                 case "RIDER": return RIDER;
                 case "CLOAK": return CLOAK;
                 case "DAGGER": return DAGGER;
+                case "PIRATE": return PIRATE;
                 case "DEFENDER": return DEFENDER;
                 case "SWORDMAN": return SWORDMAN;
                 case "ARCHER": return ARCHER;
@@ -574,7 +576,7 @@ public class Types {
         public Image getImage(int tribeKey) { return ImageIO.GetInstance().getImage(imageFile + tribeKey + ".png"); }
         public String getImageFile() { return imageFile; }
         public Image getWeaponImage(int tribeKey) {
-            if (this == RAMMER /*|| this == SCOUT*/ || this == BOMBER || this == ARCHER || this == MIND_BENDER) {
+            if (this == RAMMER || this == SCOUT || this == BOMBER || this == ARCHER || this == MIND_BENDER) {
                 return ImageIO.GetInstance().getImage(weapon + tribeKey + ".png");
             }
             return ImageIO.GetInstance().getImage(weapon);
@@ -596,6 +598,8 @@ public class Types {
                 case RIDER: return new Rider(pos, kills, isVeteran, ownerID, tribeID);
                 case CLOAK: return new Cloak(pos, kills, isVeteran, ownerID, tribeID);
                 case DAGGER: return new Dagger(pos, kills, isVeteran, ownerID, tribeID);
+                case PIRATE: return new Pirate(pos, kills, isVeteran, ownerID, tribeID);
+                case DINGY: return new Dingy(pos, kills, isVeteran, ownerID, tribeID);
                 case DEFENDER: return new Defender(pos, kills, isVeteran, ownerID, tribeID);
                 case SWORDMAN: return new Swordman(pos, kills, isVeteran, ownerID, tribeID);
                 case ARCHER: return new Archer(pos, kills, isVeteran, ownerID, tribeID);
@@ -617,22 +621,42 @@ public class Types {
 
         public boolean spawnable()
         {
-            return !(this == DAGGER || this == RAFT || this == RAMMER || this == SCOUT || this == BOMBER || this == SUPERUNIT);
+            return !(this == DAGGER
+                    || this == PIRATE
+                    || this == DINGY
+                    || this == RAFT
+                    || this == RAMMER
+                    || this == SCOUT
+                    || this == BOMBER
+                    || this == SUPERUNIT);
         }
 
         public boolean isWaterUnit()
         {
-            return this == RAFT || this == RAMMER || this == SCOUT || this == BOMBER;
+            return this == RAFT
+                    || this == RAMMER
+                    || this == SCOUT
+                    || this == BOMBER
+                    || this == PIRATE
+                    || this == DINGY;
         }
 
         public boolean isRanged()
         {
-            return this == SCOUT || this == BOMBER || this == ARCHER  || this == CATAPULT ;
+            return this == SCOUT
+                    || this == BOMBER
+                    || this == ARCHER
+                    || this == CATAPULT;
         }
 
         public boolean canFortify()
         {
-            return this == WARRIOR || this == RIDER || this == ARCHER || this == DEFENDER || this == SWORDMAN || this == KNIGHT;
+            return this == WARRIOR
+                    || this == RIDER
+                    || this == ARCHER
+                    || this == DEFENDER
+                    || this == SWORDMAN
+                    || this == KNIGHT;
         }
 
         public static ArrayList<UNIT> getSpawnableTypes() {

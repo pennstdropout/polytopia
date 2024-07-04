@@ -22,11 +22,10 @@ public class Infiltrate extends UnitAction
 
     @Override
     public boolean isFeasible(final GameState gs) {
-        Unit unit = (Unit) gs.getActor(this.unitId);
         City target = (City) gs.getActor(this.targetId);
-
-        //This needs to be a cloak that can "attack"
-        return target != null && unit.getType() == Types.UNIT.CLOAK && unit.canAttack();
+        Vector2d targetPos = target.getPosition();
+        Unit defender = gs.getBoard().getUnitAt(targetPos.x, targetPos.y);
+        return defender == null || defender.getTribeId() != gs.getBoard().getActiveTribeID();
     }
 
     public void setTargetId(int targetId) {this.targetId = targetId;}

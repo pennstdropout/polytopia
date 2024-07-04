@@ -21,7 +21,7 @@ public class InfiltrateFactory implements ActionFactory {
         LinkedList<Action> actions = new LinkedList<>();
 
         //Only if the unit can 'attack'
-        if(unit.getType() == Types.UNIT.CLOAK && unit.canAttack())
+        if((unit.getType() == Types.UNIT.CLOAK || unit.getType() == Types.UNIT.DINGY) && unit.canAttack())
         {
             Board b = gs.getBoard();
             Vector2d position = unit.getPosition();

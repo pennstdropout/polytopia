@@ -78,7 +78,7 @@ public class TribesConfig
     static final int RIDER_POINTS = 15;
 
     // Cloak
-    public static final double CLOAK_ATTACK = 0;
+    public static final double CLOAK_ATTACK = 2;
     public static final double CLOAK_DEFENCE = 0.5;
     public static final int CLOAK_MOVEMENT = 2;
     public static final int CLOAK_MAX_HP = 5;
@@ -88,12 +88,12 @@ public class TribesConfig
 
     // Dagger
     public static final double DAGGER_ATTACK = 2;
-    public static final double DAGGER_DEFENCE = 1;
-    public static final int DAGGER_MOVEMENT = 2;
+    public static final double DAGGER_DEFENCE = 2;
+    public static final int DAGGER_MOVEMENT = 1;
     public static final int DAGGER_MAX_HP = 10;
     public static final int DAGGER_RANGE = 1;
     public static final int DAGGER_COST = 3;
-    static final int DAGGER_POINTS = 15;
+    static final int DAGGER_POINTS = 0;
 
     // Raft
     public static final double RAFT_ATTACK = 0;
@@ -116,7 +116,7 @@ public class TribesConfig
     public static final double SCOUT_DEFENCE = 1;
     public static final int SCOUT_MOVEMENT = 3;
     public static final int SCOUT_RANGE = 2;
-    public static final int SCOUT_COST = 5;
+    public static final int SCOUT_COST = 0;
     static final int SCOUT_POINTS = 0;
 
     // Bomber
@@ -124,7 +124,7 @@ public class TribesConfig
     public static final double BOMBER_DEFENCE = 2;
     public static final int BOMBER_MOVEMENT = 2;
     public static final int BOMBER_RANGE = 3;
-    public static final int BOMBER_COST = 15;
+    public static final int BOMBER_COST = 0;
     static final int BOMBER_POINTS = 0;
 
     // Superunit
@@ -177,7 +177,7 @@ public class TribesConfig
     static final int FORGE_BONUS = 2;
 
     // Port
-    static final int PORT_COST = 10;
+    static final int PORT_COST = 0;
     static final int PORT_BONUS = 1;
     public static final int PORT_TRADE_DISTANCE = 4; //Count includes destination port.
 

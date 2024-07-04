@@ -53,6 +53,7 @@ public class StepMove implements NeighbourHelper
             Types.TERRAIN terrain = board.getTerrainAt(tile.x, tile.y);
             double stepCost = 0.0;
             boolean zoneOfControl = false;
+            boolean isCloak = unit.getType() == Types.UNIT.CLOAK || unit.getType() == Types.UNIT.DINGY;
 
             //Can't move to tiles where there's a non-friendly unit
             Unit otherUnit = board.getUnitAt(tile.x, tile.y);
@@ -79,8 +80,9 @@ public class StepMove implements NeighbourHelper
                 continue;
             }
 
-            //Mind benders cannot move into an enemy city tile.
-            if (unit.getType() == Types.UNIT.MIND_BENDER && board.getTerrainAt(tile.x, tile.y) == Types.TERRAIN.CITY) {
+            //Mind benders and cloaks cannot move into an enemy city tile.
+            if ((unit.getType() == Types.UNIT.MIND_BENDER || isCloak)
+                    && board.getTerrainAt(tile.x, tile.y) == Types.TERRAIN.CITY) {
                 City targetCity = (City) board.getActor(board.getCityIdAt(tile.x, tile.y));
                 //The city belongs to the enemy.
                 if (targetCity.getTribeId() != unit.getTribeId()) {
@@ -92,6 +94,10 @@ public class StepMove implements NeighbourHelper
             if (unit.getType().isWaterUnit()) {
                 switch (terrain) {
                     case CITY:
+                        if (isCloak) {
+                            stepCost = unit.MOV + 1;
+                            break;
+                        }
                     case PLAIN:
                     case FOREST:
                     case VILLAGE:
@@ -120,14 +126,18 @@ public class StepMove implements NeighbourHelper
                     case FOG:
                     case PLAIN:
                     case CITY:
+                        if (isCloak) {
+                            stepCost = unit.MOV + 1;
+                            break;
+                        }
                     case VILLAGE:
                         stepCost = 1.0;
                         break;
                     case FOREST:
                     case MOUNTAIN:
                         stepCost = costFrom < unit.MOV ? (unit.MOV - costFrom) : unit.MOV; //as much cost as needed to finished step here
+                        stepCost = isCloak ? 1.0: stepCost;
                         break;
-
                 }
 
                 //If there is a friendly/neutral road connection between two tiles then the movement cost is halved.
@@ -143,6 +153,7 @@ public class StepMove implements NeighbourHelper
             // Moving to zone of control is never a problem, but it consumes all the rest of the movement.
             if(zoneOfControl){
                 stepCost = costFrom < unit.MOV ? (unit.MOV - costFrom) : unit.MOV;
+                stepCost = isCloak ? 1.0: stepCost;
                 if(costFrom + stepCost <= unit.MOV)
                     neighbours.add(new PathNode(tile, stepCost));
 
