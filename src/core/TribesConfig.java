@@ -251,7 +251,7 @@ public class TribesConfig
     public static final int TECH_TIER_POINTS = 100;
 
     /* TRIBES */
-    public static final int INITIAL_STARS = 100;//TODO: testing revert to 5;
+    public static final int INITIAL_STARS = 5;
 
     /* ACTIONS */
     public static final int CLEAR_FOREST_STAR = 1;
