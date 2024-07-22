@@ -16,7 +16,7 @@ public class Building {
     public int cityId;
 
     //Level of the building
-    public int level;
+    private int level;
 
     /**
      * Creates a new building
@@ -62,7 +62,15 @@ public class Building {
         return type.getBonus();
     }
 
-    void levelChange(int multiplier) {
-        level += multiplier;
+    public int getLevel() {
+        return this.level;
+    }
+
+    public void setLevel(int l) {
+        this.level = l;
+    }
+
+    public void levelChange(int multiplier) {
+        this.level += multiplier;
     }
 }

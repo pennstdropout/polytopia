@@ -51,7 +51,7 @@ public class LevelUpCommand implements ActionCommand {
                 city.addPopulation(tribe, TribesConfig.CITY_LEVEL_UP_POP_GROWTH);
                 break;
             case BORDER_GROWTH:
-                gs.getBoard().expandBorder(city);
+                gs.getBoard().expandBorder(gs, city);
                 break;
             case PARK:
                 tribe.addScore(TribesConfig.CITY_LEVEL_UP_PARK);

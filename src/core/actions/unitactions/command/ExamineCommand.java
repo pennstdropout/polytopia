@@ -7,8 +7,7 @@ import core.actions.ActionCommand;
 import core.actions.unitactions.Examine;
 import core.actors.City;
 import core.actors.Tribe;
-import core.actors.units.Bomber;
-import core.actors.units.Unit;
+import core.actors.units.*;
 import core.game.Board;
 import core.game.GameState;
 import utils.Vector2d;
@@ -16,7 +15,7 @@ import utils.Vector2d;
 import java.util.Random;
 
 import static core.Types.EXAMINE_BONUS.RESEARCH;
-import static core.Types.EXAMINE_BONUS.SUPERUNIT;
+import static core.Types.EXAMINE_BONUS.VETERAN;
 
 public class ExamineCommand implements ActionCommand {
 
@@ -31,6 +30,12 @@ public class ExamineCommand implements ActionCommand {
             Random rnd = gs.getRandomGenerator();
             TechnologyTree technologyTree = t.getTechTree();
 
+            if (unit.getType() == Types.UNIT.CLOAK) {
+                ((Cloak) unit).setVisibility(true);
+            } else if (unit.getType() == Types.UNIT.DINGY) {
+                ((Dingy) unit).setVisibility(true);
+            }
+
             int handlerCityId = t.getCitiesID().get(0);
             if(t.controlsCapital())
                 handlerCityId = t.getCapitalID();
@@ -42,17 +47,17 @@ public class ExamineCommand implements ActionCommand {
             }
 
             switch (bonus) {
-                case SUPERUNIT:
+                case VETERAN:
                     Board board = gs.getBoard();
 
                     Vector2d spawnPos = unit.getPosition().copy();
                     Types.TERRAIN terr = board.getTerrainAt(spawnPos.x, spawnPos.y);
                     //instead of a super unit, in the water we create a Battleship of out a warrior
-                    Types.UNIT unitType = terr.isWater() ? Types.UNIT.BOMBER : Types.UNIT.SUPERUNIT;
-                    Unit newUnit = Types.UNIT.createUnit(spawnPos, 0, false, -1, unit.getTribeId(), unitType);
+                    Types.UNIT unitType = terr.isWater() ? Types.UNIT.RAMMER : Types.UNIT.SWORDMAN;
+                    Unit newUnit = Types.UNIT.createUnit(spawnPos, 0, true, -1, unit.getTribeId(), unitType);
                     if(terr.isWater())
                     {
-                        ((Bomber)newUnit).setBaseLandUnit(Types.UNIT.WARRIOR);
+                        ((Rammer)newUnit).setBaseLandUnit(Types.UNIT.SWORDMAN);
                     }
 
                     Unit unitInCity = board.getUnitAt(spawnPos.x, spawnPos.y);
@@ -85,7 +90,7 @@ public class ExamineCommand implements ActionCommand {
                     break;
             }
             Vector2d unitPos = unit.getPosition();
-            if(bonus != SUPERUNIT)
+            if(bonus != VETERAN)
                 gs.getBoard().setResourceAt(unitPos.x, unitPos.y, null);
 
             unit.setStatus(Types.TURN_STATUS.FINISHED);

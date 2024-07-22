@@ -20,10 +20,7 @@ import static core.Types.TECHNOLOGY.*;
 import static core.Types.TERRAIN.*;
 import static core.Types.UNIT.*;
 
-// TODO: proper markets
-// TODO: icons for lighthouses, cloaks/dingy, dagger/pirate
-// TODO: map building
-// TODO: gather stars GUI not displaying
+// TODO: map building seems off
 
 public class Types {
 
@@ -340,7 +337,28 @@ public class Types {
             return res;
         }
 
-        public List<BUILDING> getMatchingBuildings()
+        public boolean isTier2() {
+            switch (this) {
+                case SAWMILL: return true;
+                case FORGE: return true;
+                case WINDMILL: return true;
+                default: return false;
+            }
+        }
+
+        public Types.BUILDING getMatchingBuildingType() {
+            switch (this) {
+                case LUMBER_HUT: return Types.BUILDING.SAWMILL;
+                case MINE: return Types.BUILDING.FORGE;
+                case FARM: return Types.BUILDING.WINDMILL;
+                case SAWMILL: return Types.BUILDING.LUMBER_HUT;
+                case FORGE: return Types.BUILDING.MINE;
+                case WINDMILL: return Types.BUILDING.FARM;
+                default: return null;
+            }
+        }
+
+        public List<BUILDING> getMatchingBuildingWithMarket()
         {
             List<BUILDING> res = new ArrayList<>();
             switch (this)
@@ -424,7 +442,7 @@ public class Types {
 
     public enum EXAMINE_BONUS
     {
-        SUPERUNIT(0,0),
+        VETERAN(0,0),
         RESEARCH(1,0),
         POP_GROWTH(2,3),
         EXPLORER(3,0),
@@ -526,15 +544,16 @@ public class Types {
         CATAPULT (5,"img/unit/catapult/", "img/weapons/bombs/rock.png", CATAPULT_COST, MATHEMATICS, CATAPULT_POINTS), //+40
         KNIGHT (6,"img/unit/knight/", "img/weapons/melee/spear.png", KNIGHT_COST, CHIVALRY, KNIGHT_POINTS), //+40
         MIND_BENDER(7,"img/unit/mind_bender/", "img/weapons/effects/bender/", MINDBENDER_COST, PHILOSOPHY, MINDBENDER_POINTS), //+25
-        RAFT(8,"img/unit/boat/", "img/weapons/arrows/boat.png", RAFT_COST, FISHING, RAFT_POINTS), //+0
+        RAFT(8,"img/unit/boat/", "img/weapons/bombs/", RAFT_COST, FISHING, RAFT_POINTS), //+0
         RAMMER(9,"img/unit/ship/", "img/weapons/bombs/", RAMMER_COST, AQUACULTURE, RAMMER_POINTS),//+0
         BOMBER(10,"img/unit/battleship/", "img/weapons/bombs/", BOMBER_COST, NAVIGATION, BOMBER_POINTS),//+0
         SUPERUNIT(11, "img/unit/superunit/", "img/weapons/melee/tile003.png", SUPERUNIT_COST, null, SUPERUNIT_POINTS), //+50
         SCOUT(12,"img/unit/ship/", "img/weapons/bombs/", SCOUT_COST, SAILING, SCOUT_POINTS),//+0
-        CLOAK (13,"img/unit/rider/", "img/weapons/melee/tile001.png", CLOAK_COST, DIPLOMACY, CLOAK_POINTS), //+15
-        DAGGER (14,"img/unit/warrior/", "img/weapons/melee/tile001.png", DAGGER_COST, null, DAGGER_POINTS), //+15
-        PIRATE (15,"img/unit/boat/", "img/weapons/arrows/boat.png", DAGGER_COST, null, DAGGER_POINTS), //+15
-        DINGY (16,"img/unit/boat/", "img/weapons/arrows/boat.png", CLOAK_COST, DIPLOMACY, CLOAK_POINTS); //+15
+        CLOAK (13,"img/unit/cloak/", "img/weapons/melee/tile006.png", CLOAK_COST, DIPLOMACY, CLOAK_POINTS), //+15
+        DAGGER (14,"img/unit/warrior/", "img/weapons/bombs/", DAGGER_COST, DIPLOMACY, DAGGER_POINTS), //+15
+        PIRATE (15,"img/unit/boat/", "img/weapons/bombs/", DAGGER_COST, DIPLOMACY, DAGGER_POINTS), //+15
+        DINGY (16,"img/unit/boat/", "img/weapons/bombs/", CLOAK_COST, DIPLOMACY, CLOAK_POINTS), //+15
+        JUGGERNAUT(17, "img/unit/superunit/", "img/weapons/melee/tile003.png", JUGGERNAUT_COST, null, JUGGERNAUT_POINTS); //+50;
 
         private int key;
         private String imageFile, weapon;
@@ -611,6 +630,7 @@ public class Types {
                 case SCOUT: return new Scout(pos, kills, isVeteran, ownerID, tribeID);
                 case BOMBER: return new Bomber(pos, kills, isVeteran, ownerID, tribeID);
                 case SUPERUNIT: return new SuperUnit(pos, kills, isVeteran, ownerID, tribeID);
+                case JUGGERNAUT: return new Juggernaut(pos, kills, isVeteran, ownerID, tribeID);
 
                 default:
                     System.out.println("WARNING: TypescreateUnit(), type creation not implemented.");
@@ -628,7 +648,8 @@ public class Types {
                     || this == RAMMER
                     || this == SCOUT
                     || this == BOMBER
-                    || this == SUPERUNIT);
+                    || this == SUPERUNIT
+                    || this == JUGGERNAUT);
         }
 
         public boolean isWaterUnit()
@@ -638,7 +659,8 @@ public class Types {
                     || this == SCOUT
                     || this == BOMBER
                     || this == PIRATE
-                    || this == DINGY;
+                    || this == DINGY
+                    || this == JUGGERNAUT;
         }
 
         public boolean isRanged()
@@ -856,6 +878,7 @@ public class Types {
         CONVERT("img/actions/convert.png", null),
         DISBAND("img/actions/disband.png", FREE_SPIRIT),
         EXAMINE("img/actions/examine.png", null),
+        GATHER_STAR("img/actions/examine.png", NAVIGATION),
         HEAL_OTHERS("img/actions/heal2.png", null),
         INFILTRATE("img/actions/convert.png", null),
         MAKE_VETERAN(null, null),
@@ -910,6 +933,7 @@ public class Types {
                 case CONVERT: return new ConvertCommand();
                 case DISBAND: return new DisbandCommand();
                 case EXAMINE: return new ExamineCommand();
+                case GATHER_STAR: return new GatherStarCommand();
                 case HEAL_OTHERS: return new HealOthersCommand();
                 case INFILTRATE: return new InfiltrateCommand();
                 case MAKE_VETERAN: return new MakeVeteranCommand();

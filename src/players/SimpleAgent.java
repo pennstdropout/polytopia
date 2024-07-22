@@ -274,9 +274,6 @@ public class SimpleAgent extends Agent {
             case MIND_BENDER:
                 score = enemiesInCity>0 ? 0 : 2;
                 break;
-            case CLOAK:
-                score = enemiesInCity>0 ? 0 : 5;
-                break;
             case WARRIOR:
                 score = 3;
                 break;

@@ -32,13 +32,16 @@ public class Move extends UnitAction
         Pathfinder tp = new Pathfinder(unit.getPosition(), new StepMove(gs, unit));
 
         //If the unit can move and the destination is vacant, try to reach it.
-        if(unit.canMove() && gs.getBoard().getUnitAt(destination.x, destination.y) == null) {
+        if(unit.canMove()) {
+            Unit u = gs.getBoard().getUnitAt(destination.x, destination.y);
+            boolean isNull = u == null;
+            boolean isVisible = u != null && u.isVisible();
             ArrayList<PathNode> path = tp.findPathTo(destination);
 //            if(path == null)
 //            {
 //                System.out.println("ERROR calculating a path (if actions were created by MoveFactory)");
 //            }
-            return path != null;
+            return path != null && (isNull || !isVisible);
         }
         return false;
     }

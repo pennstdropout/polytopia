@@ -108,6 +108,8 @@ public abstract class Unit extends Actor
             case CATAPULT:
             case DEFENDER:
             case BOMBER:
+            case JUGGERNAUT:
+            case SUPERUNIT:
                 if(transition == MOVED && status == FRESH) { return true; }
                 if(transition == ATTACKED && status == FRESH) { return true; }
                 return false;
@@ -118,7 +120,6 @@ public abstract class Unit extends Actor
             case SCOUT:
             case WARRIOR:
             case SWORDMAN:
-            case SUPERUNIT:
             case CLOAK:
             case DAGGER:
             case PIRATE:
@@ -162,6 +163,7 @@ public abstract class Unit extends Actor
                 case CATAPULT:
                 case DEFENDER:
                 case SUPERUNIT:
+                case JUGGERNAUT:
                 case BOMBER:
                     this.status = FINISHED;
                     break;
@@ -216,6 +218,25 @@ public abstract class Unit extends Actor
     }
 
     public abstract Unit copy(boolean hideInfo);
+
+    public boolean isVisible() {
+        switch (this.getType()) {
+            case CLOAK: return ((Cloak) this).getVisibility();
+            case DINGY: return ((Dingy) this).getVisibility();
+            default: return true;
+        }
+    }
+
+    public void setVisible(boolean b) {
+        switch (this.getType()) {
+            case CLOAK:
+                ((Cloak) this).setVisibility(b);
+                break;
+            case DINGY:
+                ((Dingy) this).setVisibility(b);
+                break;
+        }
+    }
 
     Unit hide()
     {

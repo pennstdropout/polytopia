@@ -40,12 +40,6 @@ public class ResourceGathering extends CityAction
                     return t.getTechTree().isResearched(Types.TECHNOLOGY.FISHING);
                 case FRUIT:
                     return t.getTechTree().isResearched(Types.TECHNOLOGY.ORGANIZATION);
-                case STAR:
-                    Unit u = b.getUnitAt(targetPos.x, targetPos.y);
-                    return t.getTechTree().isResearched(Types.TECHNOLOGY.NAVIGATION)
-                            && u != null
-                            && u.getStatus() == Types.TURN_STATUS.FRESH
-                            && u.getTribeId() == b.getActiveTribeID();
             }
         }
         return false;

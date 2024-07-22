@@ -1,6 +1,7 @@
 package core.actions.unitactions.factory;
 
 import core.actions.Action;
+import core.actions.unitactions.GatherStar;
 import core.actors.units.*;
 import core.game.GameState;
 import core.Types;
@@ -44,6 +45,9 @@ public class UnitActionBuilder
 
         //Examine
         allActions.addAll(new ExamineFactory().computeActionVariants(unit, gs));
+
+        //Gather Star
+        allActions.addAll(new GatherStarFactory().computeActionVariants(unit, gs));
 
         //Heal Others
         allActions.addAll(new HealOthersFactory().computeActionVariants(unit, gs));

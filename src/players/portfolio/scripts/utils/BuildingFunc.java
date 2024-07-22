@@ -180,7 +180,7 @@ public class BuildingFunc {
                 LinkedList<Vector2d> neighs = position.neighborhood(1, 0, gs.getBoard().getSize());
 
                 for (Vector2d neighPos : neighs) {
-                    List<Types.BUILDING> supportBuildings = target.getMatchingBuildings();
+                    List<Types.BUILDING> supportBuildings = target.getMatchingBuildingWithMarket();
                     for (Types.BUILDING supportBuilding : supportBuildings) {
                         valid = validConstruction(gs, neighPos, supportBuilding, cityId, true);
                         if (valid) {

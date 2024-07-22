@@ -16,6 +16,7 @@ import core.actors.units.Unit;
 import core.game.Board;
 import core.game.GameState;
 
+import static core.TribesConfig.SCOUT_RANGE;
 import static core.Types.UNIT.SCOUT;
 import static core.Types.UNIT.RAMMER;
 import static core.Types.UNIT.BOMBER;
@@ -31,12 +32,14 @@ public class UpgradeCommand implements ActionCommand {
 
         if(a.isFeasible(gs)){
             int unitId;
+
             if (target == SCOUT) {
                 UpgradeToScout action = (UpgradeToScout) a;
                 unitId = action.getUnitId();
             } else if (target == RAMMER) {
                 UpgradeToRammer action = (UpgradeToRammer) a;
                 unitId = action.getUnitId();
+
             } else {
                 UpgradeToBomber action = (UpgradeToBomber) a;
                 unitId = action.getUnitId();
@@ -66,6 +69,9 @@ public class UpgradeCommand implements ActionCommand {
             board.removeUnitFromCity(unit, city, tribe);
             board.addUnit(city, newUnit);
             newUnit.setStatus(turn_status);
+            if (target == SCOUT) {
+                tribe.clearView(newUnit.getPosition().x, newUnit.getPosition().y, SCOUT_RANGE, gs.getRandomGenerator(), board, false);
+            }
             return true;
         }
         return false;

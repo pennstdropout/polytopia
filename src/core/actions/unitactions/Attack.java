@@ -3,6 +3,7 @@ package core.actions.unitactions;
 import core.Types;
 import core.actions.Action;
 import core.actions.cityactions.CityAction;
+import core.actors.units.Cloak;
 import core.game.GameState;
 import core.actors.units.Unit;
 
@@ -27,11 +28,14 @@ public class Attack extends UnitAction
         Unit target = (Unit) gs.getActor(this.targetId);
         Unit attacker = (Unit) gs.getActor(this.unitId);
 
+        boolean isVisible = target != null && target.isVisible();
+
         // Check if target is not null and that it can attack
-        if(target == null || !attacker.canAttack()
+        if(target == null || !attacker.canAttack() || !isVisible
                 || attacker.getType() == Types.UNIT.MIND_BENDER
                 || attacker.getType() == Types.UNIT.RAFT
-                || attacker.getType() == Types.UNIT.CLOAK)
+                || attacker.getType() == Types.UNIT.CLOAK
+                || attacker.getType() == Types.UNIT.DINGY)
             return false;
 
         return unitInRange(attacker, target, gs.getBoard());

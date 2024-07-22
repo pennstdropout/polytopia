@@ -7,6 +7,8 @@ import core.actions.ActionCommand;
 import core.actions.unitactions.Capture;
 import core.actors.City;
 import core.actors.Tribe;
+import core.actors.units.Cloak;
+import core.actors.units.Dingy;
 import core.actors.units.Unit;
 import core.game.Board;
 import core.game.GameState;
@@ -28,6 +30,12 @@ public class CaptureCommand implements ActionCommand {
             Unit unit = (Unit) gs.getActor(unitId);
             Board b = gs.getBoard();
             Tribe thisTribe = b.getTribe(unit.getTribeId());
+
+            if (unit.getType() == Types.UNIT.CLOAK) {
+                ((Cloak) unit).setVisibility(true);
+            } else if (unit.getType() == Types.UNIT.DINGY) {
+                ((Dingy) unit).setVisibility(true);
+            }
 
             if (captureType == Types.TERRAIN.CITY) {
                 City targetCity = (City) gs.getActor(targetCityId);

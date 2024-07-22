@@ -11,9 +11,7 @@ import core.actions.unitactions.command.AttackCommand;
 import core.actors.Actor;
 import core.actors.City;
 import core.actors.Tribe;
-import core.actors.units.Catapult;
-import core.actors.units.SuperUnit;
-import core.actors.units.Unit;
+import core.actors.units.*;
 import core.game.Board;
 import core.game.Game;
 import core.game.GameState;
@@ -210,6 +208,14 @@ public class GameView extends JComponent {
                     toPaint = getContextImg(i, j, PLAIN);
                 }
                 paintImageRotated(g, j * CELL_SIZE, i * CELL_SIZE, toPaint, CELL_SIZE, panTranslate);
+
+                boolean isCorner = (i == gridSize - 1 && j == gridSize - 1)
+                        || (i == gridSize - 1 && j == 0)
+                        || (i == 0 && j == gridSize - 1)
+                        || (i == 0 && j == 0);
+                if (isCorner && t != FOG) {
+                    paintImageRotated(g, j * CELL_SIZE, i * CELL_SIZE, ImageIO.GetInstance().getImage("img/terrain/lighthouse.png"), CELL_SIZE, panTranslate);
+                }
             }
         }
     }
@@ -298,7 +304,16 @@ public class GameView extends JComponent {
         for(int i = 0; i < gridSize; ++i) {
             for(int j = 0; j < gridSize; ++j) {
                 Unit u = board.getUnitAt(i,j);
+                boolean isNotNull = u != null;
+                boolean isVisible = true;
+                if (isNotNull && u.getType() == CLOAK) {isVisible = ((Cloak) u).getVisibility();}
+                else if (isNotNull && u.getType() == DINGY) {isVisible = ((Dingy) u).getVisibility();}
+
                 if (u != null) {
+                    if (!isVisible && gameState.getActiveTribeID() != u.getTribeId()) {
+                        continue;
+                    }
+
                     int imgSize = (int) (CELL_SIZE * 0.75);
                     if (u instanceof SuperUnit || u instanceof Catapult) imgSize = CELL_SIZE;
 
@@ -307,17 +322,17 @@ public class GameView extends JComponent {
                     int y = (int)(rotated.y - imgSize/1.5);
 
                     ArrayList<Action> possibleActions = gameState.getUnitActions(u);
-                    boolean exhausted = (possibleActions == null || possibleActions.size() == 0);
+                    boolean exhausted = (possibleActions == null || possibleActions.isEmpty());
 
                     Tribe t = gameState.getTribe(u.getTribeId());
                     int imageTribeId = t.getType().getKey();
 
-                    paintUnit(g, x, y, u.getType(), imgSize, imageTribeId, exhausted);
+                    paintUnit(g, x, y, u.getType(), imgSize, imageTribeId, exhausted, isVisible);
 
                     if (u.getType().isWaterUnit()) {
                         // Paint base land unit for water units
                         int size = imgSize/2;
-                        paintUnit(g, x + CELL_SIZE/4, y + CELL_SIZE/4, board.getBaseLandUnit(u), size, imageTribeId, exhausted);
+                        paintUnit(g, x + CELL_SIZE/4, y + CELL_SIZE/4, board.getBaseLandUnit(u), size, imageTribeId, exhausted, isVisible);
                     }
 
                     Font f = g.getFont();
@@ -330,9 +345,13 @@ public class GameView extends JComponent {
         }
     }
 
-    private void paintUnit(Graphics2D g, int x, int y, Types.UNIT type, int imgSize, int tribeId, boolean exhausted) {
+    private void paintUnit(Graphics2D g, int x, int y, Types.UNIT type, int imgSize, int tribeId, boolean exhausted, boolean isVisible) {
         String imgFile = type.getImageFile();
-        if (exhausted) {
+        if (!isVisible) {
+            String invisibleStr = imgFile + "invisible.png";
+            Image invisibleImg = ImageIO.GetInstance().getImage(invisibleStr);
+            paintImage(g, x, y, invisibleImg, imgSize, panTranslate);
+        } else if (exhausted) {
             String exhaustedStr = imgFile + tribeId + "Exhausted.png";
             Image exhaustedImg = ImageIO.GetInstance().getImage(exhaustedStr);
             paintImage(g, x, y, exhaustedImg, imgSize, panTranslate);
@@ -348,7 +367,7 @@ public class GameView extends JComponent {
                 ArrayList<Action> possibleActions = gameState.getUnitActions(u);
                 if (possibleActions != null && possibleActions.size() > 0) {
                     for (Action a : possibleActions) {
-                        if (!(a.getActionType() == Types.ACTION.EXAMINE || a.getActionType() == Types.ACTION.CAPTURE)) {
+                        if (!(a.getActionType() == Types.ACTION.EXAMINE || a.getActionType() == Types.ACTION.CAPTURE || a.getActionType() == GATHER_STAR)) {
                             Image actionImg = Types.ACTION.getImage(a);
 
                             if (actionImg != null) {
@@ -374,7 +393,7 @@ public class GameView extends JComponent {
         HashMap<Integer, ArrayList<Action>> actions = gameState.getUnitActions();
         for (Map.Entry<Integer, ArrayList<Action>> e: actions.entrySet()) {
             for (Action a : e.getValue()) {
-                if (a.getActionType() == EXAMINE || a.getActionType() == CAPTURE) {
+                if (a.getActionType() == EXAMINE || a.getActionType() == CAPTURE || a.getActionType() == GATHER_STAR) {
                     Image actionImg = Types.ACTION.getImage(a);
                     if (actionImg != null) {
                         Vector2d pos = GUI.getActionPosition(gameState, a);

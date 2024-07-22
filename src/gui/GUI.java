@@ -466,7 +466,7 @@ public class GUI extends JFrame {
                 for (Action a : e.getValue()) {
                     Vector2d pos = getActionPosition(gs, a);
                     if (pos != null && pos.x == actionY && pos.y == actionX) {
-                        if ((a.getActionType() == CAPTURE || a.getActionType() == EXAMINE) ||  // These actions don't need the unit highlighted
+                        if ((a.getActionType() == CAPTURE || a.getActionType() == EXAMINE || a.getActionType() == GATHER_STAR) ||  // These actions don't need the unit highlighted
                                 u.getPosition().x == unitY && u.getPosition().y == unitX) {
                             return a;
                         }
@@ -512,7 +512,7 @@ public class GUI extends JFrame {
         } else if (a.getActionType() == RECOVER) {
             Unit u = (Unit) gs.getActor(((UnitAction) a).getUnitId());
             pos = u.getPosition();
-        } else if (a.getActionType() == CAPTURE || a.getActionType() == EXAMINE) {
+        } else if (a.getActionType() == CAPTURE || a.getActionType() == EXAMINE || a.getActionType() == GATHER_STAR) {
             Unit u = (Unit) gs.getActor(((UnitAction) a).getUnitId());
             pos = new Vector2d(u.getPosition().x-1, u.getPosition().y);
         } else if (a.getActionType() == CONVERT) {

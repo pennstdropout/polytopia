@@ -6,6 +6,7 @@ import core.actions.ActionCommand;
 import core.actions.cityactions.ResourceGathering;
 import core.actors.City;
 import core.actors.Tribe;
+import core.actors.units.Unit;
 import core.game.Board;
 import core.game.GameState;
 import utils.Vector2d;
@@ -28,11 +29,6 @@ public class ResourceGatheringCommand implements ActionCommand {
                 case ANIMAL:
                 case FRUIT:
                     city.addPopulation(tribe, resource.getBonus());
-                    return true;
-                case STAR: //Whaling is the only resource which provides extra stars
-                    Board b = gs.getBoard();
-                    Tribe t  = b.getTribe(city.getTribeId());
-                    t.addStars(resource.getBonus());
                     return true;
             }
         }

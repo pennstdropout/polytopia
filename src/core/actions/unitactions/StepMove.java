@@ -3,6 +3,8 @@ package core.actions.unitactions;
 import core.TechnologyTree;
 import core.Types;
 import core.actors.City;
+import core.actors.units.Cloak;
+import core.actors.units.Dingy;
 import core.actors.units.Unit;
 import core.game.Board;
 import core.game.GameState;
@@ -11,6 +13,8 @@ import utils.graph.NeighbourHelper;
 import utils.graph.PathNode;
 
 import java.util.ArrayList;
+
+import static core.Types.TERRAIN.CITY;
 
 public class StepMove implements NeighbourHelper
 {
@@ -39,7 +43,7 @@ public class StepMove implements NeighbourHelper
         boolean onRoad = false;
 
         //Check if unit is on a neutral or a friendly road, cities also count as roads.
-        if(board.isRoad(from.x, from.y) || board.getTerrainAt(from.x, from.y) == Types.TERRAIN.CITY){
+        if(board.isRoad(from.x, from.y) || board.getTerrainAt(from.x, from.y) == CITY){
             int cityId = board.getCityIdAt(from.x, from.y);
             if(cityId == -1 || board.getTribe(unit.getTribeId()).controlsCity(cityId)) {
                 onRoad = true;
@@ -57,8 +61,9 @@ public class StepMove implements NeighbourHelper
 
             //Can't move to tiles where there's a non-friendly unit
             Unit otherUnit = board.getUnitAt(tile.x, tile.y);
-            if (otherUnit != null && otherUnit.getTribeId() != unit.getTribeId())
-            {
+            boolean isNotNull = otherUnit != null;
+
+            if (isNotNull && otherUnit.isVisible() && otherUnit.getTribeId() != unit.getTribeId()) {
                 continue;
             }
 
@@ -66,7 +71,7 @@ public class StepMove implements NeighbourHelper
             for (Vector2d tileAdj : tile.neighborhood(1, 0, board.getSize())) {
                 Unit u = board.getUnitAt(tileAdj.x, tileAdj.y);  // There might not be a unit there at all
                 if (u != null && u.getTribeId() != unit.getTribeId()) {
-                    zoneOfControl = true;
+                    zoneOfControl = u.isVisible();
                 }
             }
 
@@ -82,7 +87,7 @@ public class StepMove implements NeighbourHelper
 
             //Mind benders and cloaks cannot move into an enemy city tile.
             if ((unit.getType() == Types.UNIT.MIND_BENDER || isCloak)
-                    && board.getTerrainAt(tile.x, tile.y) == Types.TERRAIN.CITY) {
+                    && board.getTerrainAt(tile.x, tile.y) == CITY) {
                 City targetCity = (City) board.getActor(board.getCityIdAt(tile.x, tile.y));
                 //The city belongs to the enemy.
                 if (targetCity.getTribeId() != unit.getTribeId()) {
@@ -117,7 +122,8 @@ public class StepMove implements NeighbourHelper
                     case SHALLOW_WATER:
                     case DEEP_WATER:
                         //Embarking takes a turn of movement.
-                        if (board.getBuildingAt(tile.x, tile.y) == Types.BUILDING.PORT) {
+                        if (board.getBuildingAt(tile.x, tile.y) == Types.BUILDING.PORT
+                                && board.getCityInBorders(tile.x, tile.y).getTribeId() == unit.getTribeId()) {
                             stepCost = costFrom < unit.MOV ? (unit.MOV - costFrom) : unit.MOV; //as much cost as needed to finished step here;
                         } else {
                             continue;
@@ -126,10 +132,6 @@ public class StepMove implements NeighbourHelper
                     case FOG:
                     case PLAIN:
                     case CITY:
-                        if (isCloak) {
-                            stepCost = unit.MOV + 1;
-                            break;
-                        }
                     case VILLAGE:
                         stepCost = 1.0;
                         break;
@@ -142,7 +144,7 @@ public class StepMove implements NeighbourHelper
 
                 //If there is a friendly/neutral road connection between two tiles then the movement cost is halved.
                 //This movement boost applies only to ground units.
-                if (onRoad && (board.isRoad(tile.x, tile.y) || board.getTerrainAt(tile.x, tile.y) == Types.TERRAIN.CITY)) {
+                if (onRoad && (board.isRoad(tile.x, tile.y) || board.getTerrainAt(tile.x, tile.y) == CITY)) {
                     int cityId = board.getCityIdAt(from.x, from.y);
                     if (cityId == -1 || board.getTribe(unit.getTribeId()).controlsCity(cityId)) {
                         stepCost = Math.max(0.5, stepCost / 2.0);

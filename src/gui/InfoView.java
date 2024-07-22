@@ -330,7 +330,6 @@ public class InfoView extends JComponent {
             City c = (City) gs.getBoard().getActor(cityID);
             if (c != null) {
                 ArrayList<Action> acts = gs.getCityActions(c);
-
                 boolean foundRG = false;
                 boolean foundBF = false;
                 boolean foundCF = false;
@@ -340,6 +339,7 @@ public class InfoView extends JComponent {
                 boolean[] foundB = new boolean[actionB.length];
                 if (acts != null && acts.size() > 0) {
                     for (Action a : acts) {
+                        boolean b1 = a != null && ((CityAction) a).getTargetPos() != null && ((CityAction) a).getTargetPos().equals(position);
                         if (a != null && ((CityAction) a).getTargetPos() != null &&
                                 ((CityAction) a).getTargetPos().equals(position)) {
                             if (a.getActionType() == RESOURCE_GATHERING) {

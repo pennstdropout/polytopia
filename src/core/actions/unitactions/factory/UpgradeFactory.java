@@ -7,6 +7,7 @@ import core.actions.unitactions.UpgradeToRammer;
 import core.actions.unitactions.UpgradeToScout;
 import core.actors.Actor;
 import core.actors.City;
+import core.actors.units.Raft;
 import core.actors.units.Unit;
 import core.game.Board;
 import core.game.GameState;
@@ -25,9 +26,10 @@ public class UpgradeFactory implements ActionFactory {
         City c = gs.getBoard().getCityInBorders(unitPos.x, unitPos.y);
         int locTribeId = c == null ? -1 : c.getTribeId();
         boolean friendlyTile = unit.getTribeId() == locTribeId;
+        boolean isRaft = unit.getType() == Types.UNIT.RAFT;
 
         LinkedList<Action> upgradeActions = new LinkedList<>();
-        if(friendlyTile && unit.getType() == Types.UNIT.RAFT) {
+        if(friendlyTile && isRaft) {
 
             UpgradeToScout scout = new UpgradeToScout(unit.getActorId());
             if(scout.isFeasible(gs)){

@@ -390,13 +390,19 @@ public class Board {
             Dingy boat = (Dingy) Types.UNIT.createUnit(newPos, unit.getKills(), unit.isVeteran(), unit.getCityId(), unit.getTribeId(), Types.UNIT.DINGY);
             boat.setCurrentHP(unit.getCurrentHP());
             boat.setMaxHP(unit.getMaxHP());
-            boat.setBaseLandUnit(Types.UNIT.CLOAK);
+            boat.setBaseLandUnit(unitType);
             addUnit(city, boat);
         } else if (unitType == Types.UNIT.DAGGER) {
             Pirate boat = (Pirate) Types.UNIT.createUnit(newPos, unit.getKills(), unit.isVeteran(), unit.getCityId(), unit.getTribeId(), Types.UNIT.PIRATE);
             boat.setCurrentHP(unit.getCurrentHP());
             boat.setMaxHP(unit.getMaxHP());
-            boat.setBaseLandUnit(Types.UNIT.DAGGER);
+            boat.setBaseLandUnit(unitType);
+            addUnit(city, boat);
+        } else if (unitType == Types.UNIT.SUPERUNIT) {
+            Juggernaut boat = (Juggernaut) Types.UNIT.createUnit(newPos, unit.getKills(), unit.isVeteran(), unit.getCityId(), unit.getTribeId(), Types.UNIT.JUGGERNAUT);
+            boat.setCurrentHP(unit.getCurrentHP());
+            boat.setMaxHP(unit.getMaxHP());
+            boat.setBaseLandUnit(unitType);
             addUnit(city, boat);
         } else {
             Raft boat = (Raft) Types.UNIT.createUnit(newPos, unit.getKills(), unit.isVeteran(), unit.getCityId(), unit.getTribeId(), Types.UNIT.RAFT);
@@ -433,6 +439,11 @@ public class Board {
 
         newUnit.setCurrentHP(unit.getCurrentHP());
         newUnit.setMaxHP(unit.getMaxHP());
+
+        if (unit.getType() == Types.UNIT.DINGY) {
+            ((Cloak) newUnit).setVisibility(false);
+        }
+
         addUnit(city, newUnit);
     }
 
@@ -456,6 +467,9 @@ public class Board {
             case DINGY:
                 Dingy dingy = (Dingy) unit;
                 return dingy.getBaseLandUnit();
+            case JUGGERNAUT:
+                Juggernaut juggernaut = (Juggernaut) unit;
+                return juggernaut.getBaseLandUnit();
             default:
                 throw new IllegalStateException("Unexpected value: " + unit.getType());
         }
@@ -619,9 +633,11 @@ public class Board {
      * Expands the borders of a given city
      * @param city city whose borders to expand.
      */
-    public void expandBorder(City city){
+    public void expandBorder(GameState gs, City city){
         city.setBound(city.getBound()+TribesConfig.CITY_EXPANSION_TILES);
         assignCityTiles(city,city.getBound());
+        Tribe tribe = gs.getTribe(city.getTribeId());
+        tribe.clearView(city.getPosition().x, city.getPosition().y, city.getBound(), gs.getRandomGenerator(), gs.getBoard(), false);
     }
 
     /**

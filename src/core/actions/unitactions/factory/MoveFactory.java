@@ -1,5 +1,6 @@
 package core.actions.unitactions.factory;
 
+import core.Types;
 import core.actions.Action;
 import core.actions.ActionFactory;
 import core.actions.unitactions.Move;
@@ -23,7 +24,8 @@ public class MoveFactory implements ActionFactory {
         //If a units turn is FINISHED don't do unnecessary calculations.
         if(unit.canMove()) {
             for(PathNode tile : tp.findPaths()) {
-                if(gs.getBoard().getUnitAt(tile.getX(), tile.getY()) == null) {
+                Unit u = gs.getBoard().getUnitAt(tile.getX(), tile.getY());
+                if(u == null || !u.isVisible()) {
                     Move action = new Move(unit.getActorId());
                     action.setDestination(tile.getPosition());
                     moves.add(action);

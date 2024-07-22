@@ -9,7 +9,6 @@ import org.json.JSONObject;
 import utils.Vector2d;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 public class City extends Actor{
 
@@ -150,10 +149,11 @@ public class City extends Actor{
      * @param onlyMatching flag to indicate if the effects come from the matching buildings (those
      *      *                     associated in production) or the referenced building only.
      */
-    void updateBuildingEffects(GameState gameState, Building building, boolean negative, boolean onlyMatching)
-    {
+    void updateBuildingEffects(GameState gameState, Building building, boolean negative, boolean onlyMatching) {
         int multiplier = negative ? -1 : 1;
         Tribe tribe = gameState.getTribe(this.tribeId);
+        Board board = gameState.getBoard();
+
         switch (building.type) {
             case FARM:
             case LUMBER_HUT:
@@ -161,23 +161,19 @@ public class City extends Actor{
             case WINDMILL:
             case SAWMILL:
             case FORGE:
-                applyBonus(gameState, building, true, onlyMatching, multiplier);
+                applyBonus(gameState, building, onlyMatching, multiplier);
                 break;
             case PORT:
                 if(!onlyMatching) addPopulation(tribe, building.type.getBonus() * multiplier);
-                applyBonus(gameState, building, false, onlyMatching, multiplier);
                 break;
             case MARKET:
-                applyBonus(gameState, building, false, onlyMatching, multiplier);
+                applyMarketBonus(gameState, building, multiplier);
                 break;
             case TEMPLE:
             case WATER_TEMPLE:
             case MOUNTAIN_TEMPLE:
             case FOREST_TEMPLE:
-                if(!onlyMatching)
-                {
-                    addPopulation(tribe, building.type.getBonus() * multiplier);
-                }
+                if(!onlyMatching) { addPopulation(tribe, building.type.getBonus() * multiplier); }
                 int scoreDiff = negative ? ((Temple)building).getPoints() : TribesConfig.TEMPLE_POINTS[0];
                 tribe.addScore(scoreDiff);
                 break;
@@ -198,58 +194,111 @@ public class City extends Actor{
      * Applies the bonus of a building and its associated buildings to this city.
      * @param gameState current game state
      * @param building building that is providing the bonus.
-     * @param isPopulation indicates if the bonus affects the population or the production of the city.
      * @param onlyMatching flag to indicate if the effects come from the matching buildings (those
      *                     associated in production) or the referenced building only.
      * @param multiplier bonus applied is multiplied by this amount.
      */
-    private void applyBonus(GameState gameState, Building building, boolean isPopulation, boolean onlyMatching, int multiplier){
+    private void applyBonus(GameState gameState, Building building, boolean onlyMatching, int multiplier){
 
         int bonusToAdd;
-        ArrayList<Types.BUILDING> btest = new ArrayList<>();
         boolean isBase = building.type.isBase();
         City cityToAddTo = this;
         Board board = gameState.getBoard();
         Tribe tribe = gameState.getTribe(this.tribeId);
-        if (building.type == Types.BUILDING.MARKET) { System.out.println(cityToAddTo.production); }
-
+        boolean hasTrade = tribe.getTechTree().isResearched(Types.TECHNOLOGY.TRADE);
 
         //Population added by the base building.
-        if(isBase && isPopulation && !onlyMatching) addPopulation(tribe, multiplier * building.getBonus());
+        if(isBase && !onlyMatching) addPopulation(tribe, multiplier * building.getBonus());
 
         //Check all buildings next to the new building position.
         for(Vector2d adjPosition : building.position.neighborhood(1, 0, board.getSize()))
         {
             //For each position, if there's a building and of the production matching point
             Types.BUILDING b = board.getBuildingAt(adjPosition.x, adjPosition.y);
-            List<Types.BUILDING> matchingBuildings = building.type.getMatchingBuildings();
-            for (Types.BUILDING match : matchingBuildings) {
-                if (b != null && b == match) {
-                    btest.add(b);
-                    //Retrieve this building, which could be from this city or from another one from the tribe.
-                    Building existingBuilding;
-                    int cityId = board.getCityIdAt(adjPosition.x, adjPosition.y);
-                    if (cityId == actorId) {
-                        //the matching building belongs to this city
-                        existingBuilding = this.getBuilding(adjPosition.x, adjPosition.y);
-                    } else if (tribe.controlsCity(cityId)) {
-                        //the matching building belongs to a city from a different tribe
-                        City city = (City) gameState.getActor(cityId);
-                        existingBuilding = city.getBuilding(adjPosition.x, adjPosition.y);
-                        cityToAddTo = city;
-                    } else continue; //This may happen if the building belongs to a city from another tribe.
+            Types.BUILDING match = building.type.getMatchingBuildingType();
+            if (b != null && b == match) {
+                //Retrieve this building, which could be from this city or from another one from the tribe.
+                Building existingBuilding;
+                int cityId = board.getCityIdAt(adjPosition.x, adjPosition.y);
+                if (cityId == actorId) {
+                    //the matching building belongs to this city
+                    existingBuilding = this.getBuilding(adjPosition.x, adjPosition.y);
+                } else if (tribe.controlsCity(cityId)) {
+                    //the matching building belongs to a different city under our control
+                    City city = (City) gameState.getActor(cityId);
+                    existingBuilding = city.getBuilding(adjPosition.x, adjPosition.y);
+                    cityToAddTo = city;
+                } else continue; //This may happen if the building belongs to a city from another tribe.
 
-                    if (existingBuilding != null) {
-                        bonusToAdd = isBase ? existingBuilding.getBonus() : building.getBonus();
+                if (existingBuilding != null) {
+                    bonusToAdd = isBase ? existingBuilding.getBonus() : building.getBonus();
+                    cityToAddTo.addPopulation(tribe, bonusToAdd * multiplier);
 
-                        if (isPopulation)
-                            cityToAddTo.addPopulation(tribe, bonusToAdd * multiplier);
-                        else {
-                            cityToAddTo.addProduction(bonusToAdd * multiplier);
-                        }
-                        building.levelChange(multiplier);
-                        existingBuilding.levelChange(multiplier);
-                    }
+                    building.levelChange(multiplier);
+                    existingBuilding.levelChange(multiplier);
+
+                    if (hasTrade && b.isTier2()) updateAdjacentMarkets(gameState, existingBuilding, multiplier);
+                    if (hasTrade && building.type.isTier2()) updateAdjacentMarkets(gameState, building, multiplier);
+                }
+            }
+        }
+    }
+
+    private void applyMarketBonus(GameState gameState, Building building, int multiplier) {
+        City cityToAddTo = this;
+        Board board = gameState.getBoard();
+        Tribe tribe = gameState.getTribe(this.tribeId);
+
+        //Check all buildings next to the new building position.
+        for(Vector2d adjPosition : building.position.neighborhood(1, 0, board.getSize())) {
+            //For each position, if there's a building and of the production matching point
+            Types.BUILDING b = board.getBuildingAt(adjPosition.x, adjPosition.y);
+            if (b != null && b.isTier2()) {
+                //Retrieve this building, which could be from this city or from another one from the tribe.
+                Building existingBuilding;
+                int cityId = board.getCityIdAt(adjPosition.x, adjPosition.y);
+                if (cityId == actorId) {
+                    //the matching building belongs to this city
+                    existingBuilding = this.getBuilding(adjPosition.x, adjPosition.y);
+                } else if (tribe.controlsCity(cityId)) {
+                    //the matching building belongs to a different city under our control
+                    City city = (City) gameState.getActor(cityId);
+                    existingBuilding = city.getBuilding(adjPosition.x, adjPosition.y);
+                    cityToAddTo = city;
+                } else continue; //This may happen if the building belongs to a city from another tribe.
+
+                if (existingBuilding != null) {
+                    cityToAddTo.addProduction(existingBuilding.getLevel() * building.getBonus() * multiplier);
+                }
+            }
+        }
+    }
+
+    private void updateAdjacentMarkets(GameState gameState, Building building, int multiplier) {
+        City cityToAddTo = this;
+        Board board = gameState.getBoard();
+        Tribe tribe = gameState.getTribe(this.tribeId);
+
+        //Check all buildings next to the new building position.
+        for(Vector2d adjPosition : building.position.neighborhood(1, 0, board.getSize())) {
+            //For each position, if there's a building and of the production matching point
+            Types.BUILDING b = board.getBuildingAt(adjPosition.x, adjPosition.y);
+            if (b == Types.BUILDING.MARKET) {
+                //Retrieve this building, which could be from this city or from another one from the tribe.
+                Building existingBuilding;
+                int cityId = board.getCityIdAt(adjPosition.x, adjPosition.y);
+                if (cityId == actorId) {
+                    //the matching building belongs to this city
+                    existingBuilding = this.getBuilding(adjPosition.x, adjPosition.y);
+                } else if (tribe.controlsCity(cityId)) {
+                    //the matching building belongs to a different city under our control
+                    City city = (City) gameState.getActor(cityId);
+                    existingBuilding = city.getBuilding(adjPosition.x, adjPosition.y);
+                    cityToAddTo = city;
+                } else continue; //This may happen if the building belongs to a city from another tribe
+
+                if (existingBuilding != null) {
+                    cityToAddTo.addProduction(building.getBonus() * multiplier);
                 }
             }
         }

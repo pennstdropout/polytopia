@@ -83,7 +83,7 @@ public class TribesConfig
     public static final int CLOAK_MOVEMENT = 2;
     public static final int CLOAK_MAX_HP = 5;
     public static final int CLOAK_RANGE = 1;
-    public static final int CLOAK_COST = 0; //TODO: revert testing config
+    public static final int CLOAK_COST = 8;
     static final int CLOAK_POINTS = 15;
 
     // Dagger
@@ -116,7 +116,7 @@ public class TribesConfig
     public static final double SCOUT_DEFENCE = 1;
     public static final int SCOUT_MOVEMENT = 3;
     public static final int SCOUT_RANGE = 2;
-    public static final int SCOUT_COST = 0;
+    public static final int SCOUT_COST = 5;
     static final int SCOUT_POINTS = 0;
 
     // Bomber
@@ -124,7 +124,7 @@ public class TribesConfig
     public static final double BOMBER_DEFENCE = 2;
     public static final int BOMBER_MOVEMENT = 2;
     public static final int BOMBER_RANGE = 3;
-    public static final int BOMBER_COST = 0;
+    public static final int BOMBER_COST = 15;
     static final int BOMBER_POINTS = 0;
 
     // Superunit
@@ -135,6 +135,14 @@ public class TribesConfig
     public static final int SUPERUNIT_RANGE = 1;
     public static final int SUPERUNIT_COST = 10; //Useful for when unit is disbanded.
     static final int SUPERUNIT_POINTS = 50;
+
+    // Juggernaut
+    public static final double JUGGERNAUT_ATTACK = 4;
+    public static final double JUGGERNAUT_DEFENCE = 4;
+    public static final int JUGGERNAUT_MOVEMENT = 2;
+    public static final int JUGGERNAUT_RANGE = 1;
+    public static final int JUGGERNAUT_COST = 10; //Useful for when unit is disbanded.
+    static final int JUGGERNAUT_POINTS = 0;
 
     // Explorer
     public static final double NUM_STEPS = 15;
@@ -177,13 +185,13 @@ public class TribesConfig
     static final int FORGE_BONUS = 2;
 
     // Port
-    static final int PORT_COST = 0;
+    static final int PORT_COST = 7;
     static final int PORT_BONUS = 1;
     public static final int PORT_TRADE_DISTANCE = 4; //Count includes destination port.
 
     // Market
     static final int MARKET_COST = 5;
-    static final int MARKET_BONUS = 2;
+    static final int MARKET_BONUS = 1;
 
     // Monuments
     static final int MONUMENT_BONUS = 3;
@@ -243,7 +251,7 @@ public class TribesConfig
     public static final int TECH_TIER_POINTS = 100;
 
     /* TRIBES */
-    public static final int INITIAL_STARS = 5;//1000;
+    public static final int INITIAL_STARS = 100;//TODO: testing revert to 5;
 
     /* ACTIONS */
     public static final int CLEAR_FOREST_STAR = 1;
