@@ -1,6 +1,8 @@
 import random
 import utils
 
+# TODO: map building seems off
+
 map_size = 16  # int(input('Enter map size (16): '))
 initial_land = 0.5  # float(input('Enter initial land (0.5): '))
 smoothing = 3  # int(input('Enter smoothing (3): '))

@@ -54,3 +54,8 @@ def plus_sign(center, map_size):
     if row < map_size - 1:
         _plus_sign.append(center + map_size)
     return _plus_sign
+
+
+def is_corner(x, y, map_size):
+    return (x == 0 and y == 0) or (x == 0 and y == map_size - 1) or (x == map_size - 1 and y == 0) or (x == map_size - 1 and y == map_size - 1)
+

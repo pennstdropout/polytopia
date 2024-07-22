@@ -20,8 +20,6 @@ import static core.Types.TECHNOLOGY.*;
 import static core.Types.TERRAIN.*;
 import static core.Types.UNIT.*;
 
-// TODO: map building seems off
-
 public class Types {
 
     public enum TECHNOLOGY {
