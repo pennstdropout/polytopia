@@ -94,9 +94,17 @@ def fetch(url, binary=False):
             raise Abort(f"HTTP 403 / blocked host at {url}\n{detail}")
         raise RuntimeError(f"HTTP {e.code} at {url}") from None
     except urllib.error.URLError as e:
-        if "host_not_allowed" in str(e.reason):
-            raise Abort(f"host_not_allowed at {url}: {e.reason}")
-        raise RuntimeError(f"{type(e).__name__}: {e.reason} at {url}") from None
+        # A denied CONNECT surfaces as URLError, not HTTPError - the proxy
+        # rejects the tunnel before any HTTP response exists. Treat those as
+        # hard stops too, otherwise a policy denial looks like a flaky socket
+        # and the backoff quietly hammers a host that is refusing us.
+        reason = str(e.reason)
+        if ("host_not_allowed" in reason
+                or "403" in reason
+                or "Forbidden" in reason
+                or "Tunnel connection failed" in reason):
+            raise Abort(f"blocked at {url}: {reason}")
+        raise RuntimeError(f"{type(e).__name__}: {reason} at {url}") from None
     return body if binary else body.decode("utf-8", "replace")
 
 
@@ -298,6 +306,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=0,
                     help="stop after N plates (0 = all)")
+    ap.add_argument("--rebuild-manifest", action="store_true",
+                    help="rebuild manifest.csv from cached metadata and files "
+                         "already on disk, without making any request")
     args = ap.parse_args()
 
     for d in (OUT, IMAGES, CACHE):
@@ -307,6 +318,30 @@ def main():
 
     failures_path = os.path.join(OUT, "failures.log")
     rows, failures = [], []
+
+    if args.rebuild_manifest:
+        with open(os.path.join(CACHE, "items.json")) as f:
+            items = json.load(f)
+        missing = []
+        for i, rec in enumerate(items, start=1):
+            title = rec.get("displayName", "").strip()
+            name = f"{i:03d}_{slugify(title)}.jpg"
+            path = os.path.join(IMAGES, name)
+            meta_path = os.path.join(
+                CACHE, f"{rec['id'].replace('~', '_')}.json")
+            if not (os.path.exists(path) and os.path.exists(meta_path)):
+                missing.append(f"{i:03d}\t{rec['id']}\t{title}\tnot downloaded")
+                continue
+            with open(meta_path) as f:
+                meta = json.load(f)
+            rows.append(row(f"{i:03d}", name, rec["id"], title,
+                            field(rec, "Date"), meta["iiif_url"],
+                            meta["width"], meta["height"],
+                            os.path.getsize(path)))
+        write_manifest(rows)
+        print(f"Rebuilt manifest.csv from disk: {len(rows)} plate(s), "
+              f"{len(missing)} still missing.")
+        return 0
 
     try:
         items = enumerate_items()
