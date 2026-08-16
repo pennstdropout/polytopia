@@ -14,3 +14,5 @@ py/venv/
 test/
 map/
 map_elites_*
+# Downloaded atlas plates (large binaries, not source)
+rumsey-bayer-atlas/
