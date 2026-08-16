@@ -1,0 +1,5 @@
+# Downloaded plates are ~8 MB each (~1.2 GB for all 145) -- not for git.
+images/
+.cache/
+manifest.csv
+failures.log
