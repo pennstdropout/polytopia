@@ -303,13 +303,17 @@ def write_manifest(rows):
 
 
 def main():
+    global DELAY
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=0,
                     help="stop after N plates (0 = all)")
+    ap.add_argument("--delay", type=float, default=DELAY,
+                    help=f"seconds between requests (default {DELAY})")
     ap.add_argument("--rebuild-manifest", action="store_true",
                     help="rebuild manifest.csv from cached metadata and files "
                          "already on disk, without making any request")
     args = ap.parse_args()
+    DELAY = args.delay
 
     for d in (OUT, IMAGES, CACHE):
         os.makedirs(d, exist_ok=True)
