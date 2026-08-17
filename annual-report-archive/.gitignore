@@ -1,0 +1,5 @@
+# ~4.5 GB of cover scans across 2,670 items -- not for git.
+images/
+.cache/
+manifest.csv
+failures.log

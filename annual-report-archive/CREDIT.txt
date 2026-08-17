@@ -1,0 +1,16 @@
+Vintage corporate annual report covers, 1945-1992.
+
+Scans courtesy of:
+  * Internet Archive (archive.org) -- The Annual Reports Archive collection
+  * McGill University Library -- Canadian Corporate Reports (via Internet Archive)
+  * University of Washington Libraries -- Digital Collections
+  * bitsavers.org
+  * Index and semantic search: Annual Report Archive (annualreport.gallery), built by Phil Hedayatnia (@philhedayatnia)
+
+Each image's specific source collection and source page are recorded per row
+in manifest.csv. Downloaded for personal, non-commercial use.
+
+Note on rights: these are corporate publications from 1945-1992. Many are
+still under copyright even though the hosting institutions make the scans
+publicly viewable. Fine for private study and personal prints; check the
+rights statement on the source page before publication or resale.
