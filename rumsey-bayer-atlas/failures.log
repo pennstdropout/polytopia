@@ -1,0 +1,19 @@
+FINAL STATE: 0 outstanding failures. All 145 plates downloaded and verified.
+
+Incident log (all resolved; recorded for transparency):
+
+1. 403 Forbidden - agent proxy gateway, at plate 060 (Tennessee).
+   "gateway answered 403 to CONNECT (policy denial or upstream failure)"
+   for www.davidrumsey.com:443, three times at 21:45:29-21:45:35Z.
+   Run was halted on instruction; no attempt made to route around it.
+   Cleared on its own; verified with a single request before resuming.
+
+2. HTTP 500 from LUNA's image backend, at plates 086-090.
+   LUNA returned HTTP 200 carrying an HTML error page wrapping
+   "org.springframework.web.client.HttpServerErrorException:
+    500 Internal Server Error" instead of JPEG data.
+   Run was paused voluntarily rather than hammer a failing backend.
+   All five plates succeeded after a cooldown and are verified intact.
+
+3. 103 transient "Connection reset by peer" responses across the full run,
+   absorbed by exponential backoff. None resulted in a lost or partial plate.
