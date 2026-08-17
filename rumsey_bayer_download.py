@@ -108,12 +108,19 @@ def fetch(url, binary=False):
     return body if binary else body.decode("utf-8", "replace")
 
 
-def fetch_retry(url, binary=False, label=""):
-    """fetch() with exponential backoff. Abort propagates immediately."""
+def fetch_retry(url, binary=False, label="", validate=None):
+    """fetch() with exponential backoff. Abort propagates immediately.
+
+    validate: optional callable raising on a malformed body, so a truncated or
+    error-page response is retried rather than treated as a hard failure.
+    """
     delay = 2.0
     for attempt in range(1, MAX_RETRIES + 1):
         try:
-            return fetch(url, binary=binary)
+            body = fetch(url, binary=binary)
+            if validate:
+                validate(body)
+            return body
         except Abort:
             raise
         except Exception as e:
@@ -225,10 +232,14 @@ def process(idx, rec, failures):
 
 def fetch_tile(base, x, y, w, h):
     """Fetch one native-resolution region. Returns (PIL image, actual w, h)."""
+    def jpeg(b):
+        if not b.startswith(b"\xff\xd8") or not b.rstrip().endswith(b"\xff\xd9"):
+            raise RuntimeError(f"tile {x},{y}: malformed JPEG ({len(b)} bytes, "
+                               f"starts {b[:16]!r})")
+
     url = f"{base}/{x},{y},{w},{h}/full/0/default.jpg"
-    blob = fetch_retry(url, binary=True, label=f"tile {x},{y},{w},{h}")
-    if not blob.startswith(b"\xff\xd8"):
-        raise RuntimeError(f"tile {x},{y} is not a JPEG ({len(blob)} bytes)")
+    blob = fetch_retry(url, binary=True, label=f"tile {x},{y},{w},{h}",
+                       validate=jpeg)
     img = Image.open(io.BytesIO(blob))
     img.load()
     return img
