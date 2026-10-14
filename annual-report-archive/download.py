@@ -47,11 +47,22 @@ Politeness: strictly sequential, DELAY seconds between every request,
 descriptive User-Agent. These are nonprofit archives and a university
 library -- do not add parallelism.
 
+Scope. Resolution varies enormously by collection, so --scope selects what
+is worth downloading (measured, not guessed):
+
+    print (default)  archive.org items except McGill: every one clears 8in at
+                     300dpi and most clear 16in.               ~1,448 items
+    iiif             everything archive.org or UW can serve as IIIF; adds the
+                     McGill (~5.5x7.3in) and UW (~4x5.5in) scans.  ~2,757
+    all              also the ~245 records on hosts with no IIIF, where the
+                     gallery's own ~1,300px derivative is all there is. ~3,002
+
 Usage:
-    python3 download.py                 # full batch (2,670)
-    python3 download.py --limit 3       # first N records
-    python3 download.py --only-sample   # one item per source pattern
-    python3 download.py --refresh-index # re-read the gallery index
+    python3 download.py                   # print-worthy batch (~1,448)
+    python3 download.py --scope all       # everything, best effort
+    python3 download.py --limit 3         # first N records in scope
+    python3 download.py --only-sample     # one item per source pattern
+    python3 download.py --refresh-index   # re-read the gallery index
 """
 
 import argparse
@@ -88,6 +99,8 @@ DELAY = 2.0
 MAX_ATTEMPTS = 5
 BACKOFF_START = 4.0
 ASPECT_TOLERANCE = 0.04
+# Anything in --scope print should comfortably exceed this; log it if not.
+PRINT_MIN_LONG_EDGE = 2400
 
 CREDITS = [
     "Internet Archive (archive.org) -- The Annual Reports Archive collection",
@@ -224,6 +237,22 @@ def read_index(refresh=False):
                          "%d) -- the page layout may have changed\n"
                          % (len(records), MIN_EXPECTED_ITEMS))
     return records
+
+
+def in_scope(item, scope):
+    """Which records are worth fetching -- see the Scope note up top."""
+    if scope == "all":
+        return True
+    host = (urllib.parse.urlsplit(item.get("source_page_url") or "").hostname
+            or "").lower()
+    if scope == "iiif":
+        return host in ("archive.org", "digitalcollections.lib.washington.edu")
+    if scope == "print":
+        # McGill's own scans top out around 1,700x2,300, and the UW and
+        # non-archive hosts are smaller still, so none of them can make a
+        # large print no matter which endpoint we ask.
+        return host == "archive.org" and not item["id"].startswith("McGillLibrary-")
+    raise ValueError("unknown scope %r" % scope)
 
 
 def slugify(text, maxlen=48):
@@ -479,6 +508,9 @@ def make_row(item, url, source, w, h, size):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--scope", choices=("print", "iiif", "all"),
+                    default="print", help="which records to fetch "
+                    "(default: print -- see the Scope note in this file)")
     ap.add_argument("--only-sample", action="store_true",
                     help="one item per source pattern, to verify each path")
     ap.add_argument("--refresh-index", action="store_true")
@@ -493,8 +525,10 @@ def main():
     records = read_index(refresh=args.refresh_index)
     with open(ITEMS_JSON, "w") as fh:
         json.dump(records, fh, indent=1)
-    items = build_index(records)
-    print("%d records indexed (chronological).\n" % len(items))
+    all_items = build_index(records)
+    items = [i for i in all_items if in_scope(i, args.scope)]
+    print("%d records indexed; %d in --scope %s.\n"
+          % (len(all_items), len(items), args.scope))
 
     todo = items
     if args.only_sample:
@@ -567,6 +601,11 @@ def main():
                 continue
         else:
             done += 1
+
+        if args.scope == "print" and max(w, h) < PRINT_MIN_LONG_EDGE:
+            log_failure(item["id"], "WARN only %dx%d in print scope" % (w, h))
+            print("           warn: long edge %d px is below %d"
+                  % (max(w, h), PRINT_MIN_LONG_EDGE))
 
         rows[item["id"]] = make_row(item, url, source, w, h, size)
         write_csv(rows, items)
