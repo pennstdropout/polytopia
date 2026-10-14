@@ -343,10 +343,28 @@ def native_size(service_base):
     return int(info["width"]), int(info["height"])
 
 
-def full_image_url(service_base, width):
-    """Explicit sizeByW. /full/max/ and /full/full/ are silently capped at
-    tile size by some IIIF servers, so always name the width we want."""
-    return "%s/full/%d,/0/default.jpg" % (service_base, width)
+def image_url_candidates(service_base, width):
+    """Max-resolution request forms, best first.
+
+    These conventions differ per server and are not guessable -- both of the
+    servers here reject the other's preferred form:
+
+      * iiif.archive.org serves native size only for /full/max/. An explicit
+        sizeByW at the native width answers 500 (inconsistently -- sometimes
+        it succeeds), /full/full/ answers 400, and sizeByW works only at the
+        precomputed pyramid widths listed in info.json.
+      * Rumsey's LUNA server is the mirror image: /full/max/, /full/full/ and
+        /full/pct:100/ all return a silently capped 1536px thumbnail with
+        HTTP 200, and only an explicit sizeByW yields native resolution.
+
+    So ask with the host's known-good form first and keep the other as a
+    fallback. The caller verifies the returned pixel dimensions either way, so
+    a capped response is rejected rather than quietly accepted."""
+    by_width = "%s/full/%d,/0/default.jpg" % (service_base, width)
+    by_max = "%s/full/max/0/default.jpg" % service_base
+    if "iiif.archive.org" in service_base:
+        return [by_max, by_width]
+    return [by_width, by_max]
 
 
 # ---------------------------------------------------------------- JPEG probe
@@ -449,15 +467,33 @@ def download_one(item, path):
     width, height = native_size(service)
     time.sleep(DELAY)
 
-    url = full_image_url(service, width)
     tmp = path + ".part"
-    fetch(url, out_path=tmp, timeout=900, label=item["filename"])
-
-    got_w, got_h = jpeg_size(tmp)
-    if got_w < width or got_h < height:
-        os.remove(tmp)
-        raise RuntimeError("server returned %dx%d, info.json declares %dx%d"
-                           % (got_w, got_h, width, height))
+    candidates = image_url_candidates(service, width)
+    errors = []
+    for n, candidate in enumerate(candidates):
+        try:
+            # Few attempts on a candidate we can fall back from; the full
+            # budget on the last one.
+            fetch(candidate, out_path=tmp, timeout=900,
+                  label=item["filename"],
+                  attempts=2 if n < len(candidates) - 1 else MAX_ATTEMPTS)
+            got_w, got_h = jpeg_size(tmp)
+            if got_w < width or got_h < height:
+                raise RuntimeError("returned %dx%d, info.json declares %dx%d"
+                                   % (got_w, got_h, width, height))
+        except HardStop:
+            raise
+        except Exception as e:
+            if os.path.exists(tmp):
+                os.remove(tmp)
+            errors.append("%s -> %s" % (candidate.rsplit("/full/", 1)[-1], e))
+            if n < len(candidates) - 1:
+                time.sleep(DELAY)
+            continue
+        url = candidate
+        break
+    else:
+        raise RuntimeError("; ".join(errors))
 
     # Aspect check: confirms this is the cover page, not an interior page.
     expected = item.get("aspect")
