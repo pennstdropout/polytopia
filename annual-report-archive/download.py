@@ -80,7 +80,9 @@ GALLERY = "https://annualreport.gallery/"
 IA_IMAGE = "https://iiif.archive.org/image/iiif/3/"
 IA_MANIFEST = "https://iiif.archive.org/iiif/3/%s/manifest.json"
 UW_SERVICE = "https://digitalcollections.lib.washington.edu/iiif/2/reports:%s"
-EXPECTED_ITEMS = 2670
+# The gallery keeps adding records (2,670 in Aug 2026, 3,002 in Oct 2026), so
+# this is a sanity floor, not an expected total.
+MIN_EXPECTED_ITEMS = 2670
 
 DELAY = 2.0
 MAX_ATTEMPTS = 5
@@ -99,6 +101,13 @@ CREDITS = [
 
 class HardStop(Exception):
     """Access refused -- abort rather than routing around it."""
+
+
+class NoUpstreamIIIF(Exception):
+    """This record's source host exposes no IIIF service we can use, so the
+    gallery's own derivative is the best available image. Raised without
+    making any request -- asking archive.org for an item it never held just
+    earns five retries and a 500."""
 
 
 def log_failure(what, err):
@@ -128,12 +137,13 @@ def _curl(url, out_path=None, timeout=300):
     return code.strip(), body, None
 
 
-def fetch(url, out_path=None, timeout=300, label=None, retry_4xx=False):
+def fetch(url, out_path=None, timeout=300, label=None, retry_4xx=False,
+          attempts=MAX_ATTEMPTS):
     """Fetch with retry + exponential backoff. HardStop on 403."""
     label = label or url
     delay = BACKOFF_START
     last = "unknown error"
-    for attempt in range(1, MAX_ATTEMPTS + 1):
+    for attempt in range(1, attempts + 1):
         code, body, err = _curl(url, out_path, timeout)
         if err is None:
             if code == "200":
@@ -148,13 +158,12 @@ def fetch(url, out_path=None, timeout=300, label=None, retry_4xx=False):
             last = err
             if "host_not_allowed" in last:
                 raise HardStop(last)
-        if attempt < MAX_ATTEMPTS:
+        if attempt < attempts:
             sys.stderr.write("    retry %d/%d in %.0fs (%s) %s\n"
-                             % (attempt, MAX_ATTEMPTS, delay, last, label))
+                             % (attempt, attempts, delay, last, label))
             time.sleep(delay)
             delay *= 2
-    raise RuntimeError("%s after %d attempts: %s"
-                       % (last, MAX_ATTEMPTS, url))
+    raise RuntimeError("%s after %d attempts: %s" % (last, attempts, url))
 
 
 # ---------------------------------------------------------------- indexing
@@ -210,9 +219,10 @@ def read_index(refresh=False):
         if obj["id"] not in seen:
             seen.add(obj["id"])
             records.append(obj)
-    if len(records) != EXPECTED_ITEMS:
-        sys.stderr.write("WARNING: expected %d records, parsed %d\n"
-                         % (EXPECTED_ITEMS, len(records)))
+    if len(records) < MIN_EXPECTED_ITEMS:
+        sys.stderr.write("WARNING: parsed only %d records (expected at least "
+                         "%d) -- the page layout may have changed\n"
+                         % (len(records), MIN_EXPECTED_ITEMS))
     return records
 
 
@@ -256,7 +266,9 @@ def ia_service_from_manifest(identifier):
     """Single-file IA items: the inner jp2 name differs from the identifier,
     so read the manifest and take canvas 0's image service."""
     url = IA_MANIFEST % urllib.parse.quote(identifier, safe="")
-    m = json.loads(fetch(url, timeout=120, label="IA manifest"))
+    # Two attempts, not five: IA answers 500 for items with no IIIF
+    # derivative, and the gallery derivative is waiting as a fallback.
+    m = json.loads(fetch(url, timeout=120, label="IA manifest", attempts=2))
     canvases = m.get("items") or []
     if not canvases:
         raise RuntimeError("manifest has no canvases")
@@ -269,20 +281,31 @@ def ia_service_from_manifest(identifier):
 
 
 def resolve_service(item):
-    """Return (service_base_url, requests_used)."""
+    """Pick the IIIF image service for this record, by its source host.
+
+    Only archive.org and UW Libraries serve IIIF for this material. Note that
+    web.archive.org is a Wayback snapshot of someone else's page, not an IA
+    item, so it does not qualify."""
     ident = item["id"]
+    host = (urllib.parse.urlsplit(item.get("source_page_url") or "").hostname
+            or "").lower()
 
-    if ident.startswith("uw") and ident[2:].isdigit():
-        return UW_SERVICE % ident[2:], 0
+    if host == "digitalcollections.lib.washington.edu":
+        if ident.startswith("uw") and ident[2:].isdigit():
+            return UW_SERVICE % ident[2:], 0
+        raise NoUpstreamIIIF("UW record with unexpected id %r" % ident)
 
-    if "__" in ident:
-        # IA multi-report item: inner jp2 path is deterministic from the file
-        # stem, so no lookup request is needed.
-        collection, _, stem = ident.partition("__")
-        inner = "%s/%s_jp2.zip/%s_jp2/%s_0000.jp2" % (collection, stem, stem, stem)
-        return IA_IMAGE + urllib.parse.quote(inner, safe=""), 0
+    if host == "archive.org":
+        if "__" in ident:
+            # Multi-report item: the inner jp2 path is deterministic from the
+            # file stem, so no lookup request is needed.
+            collection, _, stem = ident.partition("__")
+            inner = "%s/%s_jp2.zip/%s_jp2/%s_0000.jp2" % (
+                collection, stem, stem, stem)
+            return IA_IMAGE + urllib.parse.quote(inner, safe=""), 0
+        return ia_service_from_manifest(ident), 1
 
-    return ia_service_from_manifest(ident), 1
+    raise NoUpstreamIIIF("no IIIF service for host %r" % (host or "unknown"))
 
 
 def native_size(service_base):
@@ -521,9 +544,13 @@ def main():
                 print("           FAILED: %s" % e)
                 time.sleep(DELAY)
                 continue
-            print("           upstream unavailable (%s)" % e)
-            log_failure(item["id"], "upstream: %s -- using gallery derivative" % e)
-            time.sleep(DELAY)
+            if isinstance(e, NoUpstreamIIIF):
+                print("           %s; using gallery derivative" % e)
+            else:
+                print("           upstream unavailable (%s)" % e)
+                log_failure(item["id"],
+                            "upstream: %s -- using gallery derivative" % e)
+                time.sleep(DELAY)
             try:
                 url, source, w, h, size = download_gallery_fallback(item, path)
                 fell_back += 1
